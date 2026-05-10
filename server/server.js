@@ -9,6 +9,10 @@ const io = new Server(server);
 
 const activeSessions = new Set(); // Store valid 6-digit session IDs
 
+// Serve static files from the server directory (allows users to download install.sh and install.ps1)
+app.use(express.static(__dirname));
+
+
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 
 io.on('connection', (socket) => {
