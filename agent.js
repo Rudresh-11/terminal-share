@@ -2,38 +2,49 @@ const os = require('os');
 const pty = require('node-pty');
 const io = require('socket.io-client');
 
-const socket = io('http://192.168.1.6:3000');
-const sessionId = 'my-secret-session'; // This would be dynamic in production
+const socket = io('http://localhost:3000'); // Connect to the Relay Server
+const sessionId = Math.floor(100000 + Math.random() * 900000).toString(); // Generate random 6-digit code
 
 // Detect shell
 const shell = os.platform() === 'win32' ? 'powershell.exe' : 'bash';
 
-const ptyProcess = pty.spawn(shell, [], {
-    name: 'xterm-color',
-    cols: 80,
-    rows: 30,
-    cwd: process.env.HOME,
-    env: process.env
-});
+let ptyProcess = null;
 
 socket.emit('join-session', sessionId);
 
-console.log(`Agent running. Sharing session: ${sessionId}`);
+console.log(`\x1b[32m==================================================\x1b[0m`);
+console.log(`\x1b[1mAgent running. Your sharing code is: \x1b[33m${sessionId}\x1b[0m`);
+console.log(`\x1b[32m==================================================\x1b[0m`);
 console.log(`Live Mirroring Active. Press Ctrl+C to stop.\n`);
 console.log(`--------------------------------------------------`);
+console.log(`\x1b[90mWaiting for a web user to connect with the code above...\x1b[0m`);
 
-// Send shell output to BOTH the Web Server and the Local Host Console
-ptyProcess.onData((data) => {
-    // 1. Print the exact terminal output to the host's screen
-    process.stdout.write('\x1b[90m' + data + '\x1b[0m'); 
-    // 2. Send the exact terminal output to the web user
-    socket.emit('terminal-data', { sessionId, data });
+// Only spawn the PTY when a user actually connects
+socket.on('user-connected', () => {
+    if (ptyProcess) return; // Avoid spawning multiple times
+
+    console.log(`\n\x1b[32m[!] User connected. Starting terminal session...\x1b[0m\n`);
+
+    ptyProcess = pty.spawn(shell, [], {
+        name: 'xterm-color',
+        cols: 80,
+        rows: 30,
+        cwd: process.env.HOME,
+        env: process.env
+    });
+
+    // Send shell output to BOTH the Web Server and the Local Host Console
+    ptyProcess.onData((data) => {
+        // 1. Print the exact terminal output to the host's screen
+        process.stdout.write('\x1b[90m' + data + '\x1b[0m');
+        // 2. Send the exact terminal output to the web user
+        socket.emit('terminal-data', { sessionId, data });
+    });
 });
 
 // Receive keystrokes from the Relay Server
 socket.on('terminal-input', (data) => {
-    // We no longer manually print the keystroke here. 
-    // We just feed it to the shell, and the shell will echo it back out 
-    // through ptyProcess.onData automatically!
-    ptyProcess.write(data);
+    if (ptyProcess) {
+        ptyProcess.write(data);
+    }
 });

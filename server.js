@@ -7,6 +7,8 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
+const activeSessions = new Set(); // Store valid 6-digit session IDs
+
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 
 io.on('connection', (socket) => {
@@ -14,7 +16,16 @@ io.on('connection', (socket) => {
 
     // Join a room based on a session ID
     socket.on('join-session', (sessionId) => {
-        socket.join(sessionId);
+        if (/^\d{6}$/.test(sessionId)) {
+            activeSessions.add(sessionId);
+            socket.join(sessionId);
+            socket.emit('session-joined', { status: 'success' });
+
+            // Notify all agents in the room that a user has connected
+            socket.to(sessionId).emit('user-connected');
+        } else {
+            socket.emit('session-joined', { status: 'error', message: 'Invalid session code' });
+        }
     });
 
     // Relay terminal output from Agent -> Web
