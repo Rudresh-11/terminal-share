@@ -2,9 +2,19 @@
   "name": "terminal-share",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "agent.js",
+  "bin": "agent.js",
+  "pkg": {
+    "targets": [
+      "node18-win-x64",
+      "node18-linux-x64",
+      "node18-macos-x64"
+    ],
+    "options": "bin-static"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "pkg ."
   },
   "keywords": [],
   "author": "",

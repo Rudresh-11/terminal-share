@@ -14,17 +14,25 @@ app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 io.on('connection', (socket) => {
     console.log('Connection established:', socket.id);
 
-    // Join a room based on a session ID
-    socket.on('join-session', (sessionId) => {
+    // Agents use this to announce their session code
+    socket.on('register-session', (sessionId) => {
         if (/^\d{6}$/.test(sessionId)) {
             activeSessions.add(sessionId);
+            socket.join(sessionId);
+            console.log(`Session registered: ${sessionId}`);
+        }
+    });
+
+    // Users use this to join an existing session
+    socket.on('join-session', (sessionId) => {
+        if (activeSessions.has(sessionId)) {
             socket.join(sessionId);
             socket.emit('session-joined', { status: 'success' });
 
             // Notify all agents in the room that a user has connected
             socket.to(sessionId).emit('user-connected');
         } else {
-            socket.emit('session-joined', { status: 'error', message: 'Invalid session code' });
+            socket.emit('session-joined', { status: 'error', message: 'Invalid or expired session code' });
         }
     });
 

@@ -2,7 +2,7 @@ const os = require('os');
 const pty = require('node-pty');
 const io = require('socket.io-client');
 
-const socket = io('http://localhost:3000'); // Connect to the Relay Server
+const socket = io('https://terminal-share.onrender.com'); // Connect to the Relay Server
 const sessionId = Math.floor(100000 + Math.random() * 900000).toString(); // Generate random 6-digit code
 
 // Detect shell
@@ -10,7 +10,7 @@ const shell = os.platform() === 'win32' ? 'powershell.exe' : 'bash';
 
 let ptyProcess = null;
 
-socket.emit('join-session', sessionId);
+socket.emit('register-session', sessionId);
 
 console.log(`\x1b[32m==================================================\x1b[0m`);
 console.log(`\x1b[1mAgent running. Your sharing code is: \x1b[33m${sessionId}\x1b[0m`);

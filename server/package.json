@@ -1,0 +1,13 @@
+{
+  "name": "terminal-share-server",
+  "version": "1.0.0",
+  "description": "Relay server for terminal sharing",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1",
+    "socket.io": "^4.8.3"
+  }
+}
