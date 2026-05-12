@@ -1,371 +1,423 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Terminal Share | Secure Remote Terminal Mirroring</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css" />
     <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <style>
-        :root {
-            --bg: #0d1117;
-            --bg-secondary: #161b22;
-            --text: #c9d1d9;
-            --text-bright: #f0f6fc;
-            --accent: #238636;
-            --accent-hover: #2ea043;
-            --border: #30363d;
-            --muted: #8b949e;
-        }
+      :root {
+        --bg: #0d1117;
+        --bg-secondary: #161b22;
+        --text: #c9d1d9;
+        --text-bright: #f0f6fc;
+        --accent: #238636;
+        --accent-hover: #2ea043;
+        --border: #30363d;
+        --muted: #8b949e;
+      }
 
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-            scroll-behavior: smooth;
-        }
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+        scroll-behavior: smooth;
+      }
 
-        /* Navbar */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 2rem;
-            background: rgba(13, 17, 23, 0.8);
-            backdrop-filter: blur(10px);
-            position: fixed;
-            top: 0;
-            width: 100%;
-            box-sizing: border-box;
-            z-index: 1000;
-            border-bottom: 1px solid var(--border);
-        }
-        .logo {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--text-bright);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-        }
-        .nav-links a {
-            color: var(--text);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.2s;
-        }
-        .nav-links a:hover { color: var(--text-bright); }
+      /* Navbar */
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        background: rgba(13, 17, 23, 0.8);
+        backdrop-filter: blur(10px);
+        position: fixed;
+        top: 0;
+        width: 100%;
+        box-sizing: border-box;
+        z-index: 1000;
+        border-bottom: 1px solid var(--border);
+      }
+      .logo {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--text-bright);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+      }
+      .nav-links a {
+        color: var(--text);
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: color 0.2s;
+      }
+      .nav-links a:hover {
+        color: var(--text-bright);
+      }
 
-        /* Hero Section */
-        .hero {
-            padding: 160px 2rem 80px;
-            text-align: center;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        h1 {
-            font-size: 3.5rem;
-            color: var(--text-bright);
-            margin-bottom: 1rem;
-            line-height: 1.2;
-        }
-        .hero p {
-            font-size: 1.25rem;
-            color: var(--muted);
-            margin-bottom: 2.5rem;
-        }
+      /* Hero Section */
+      .hero {
+        padding: 160px 2rem 80px;
+        text-align: center;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      h1 {
+        font-size: 3.5rem;
+        color: var(--text-bright);
+        margin-bottom: 1rem;
+        line-height: 1.2;
+      }
+      .hero p {
+        font-size: 1.25rem;
+        color: var(--muted);
+        margin-bottom: 2.5rem;
+      }
 
-        /* Connection Card */
-        .connect-card {
-            background: var(--bg-secondary);
-            padding: 2.5rem;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            max-width: 450px;
-            margin: 0 auto;
-            text-align: center;
-        }
-        .connect-card h3 {
-            margin: 0 0 1rem;
-            color: var(--text-bright);
-        }
-        .connect-card p {
-            font-size: 0.9rem;
-            color: var(--muted);
-            margin-bottom: 1.5rem;
-        }
-        input {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            color: var(--text-bright);
-            padding: 12px;
-            font-size: 1.2rem;
-            text-align: center;
-            border-radius: 6px;
-            width: 200px;
-            margin-bottom: 1rem;
-            letter-spacing: 4px;
-            outline: none;
-        }
-        input:focus { border-color: #58a6ff; }
-        .btn {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.2s;
-        }
-        .btn:hover { background: var(--accent-hover); }
-        .error-msg { color: #f85149; font-size: 0.85rem; margin-bottom: 1rem; display: none; }
+      /* Connection Card */
+      .connect-card {
+        background: var(--bg-secondary);
+        padding: 2.5rem;
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        max-width: 450px;
+        margin: 0 auto;
+        text-align: center;
+      }
+      .connect-card h3 {
+        margin: 0 0 1rem;
+        color: var(--text-bright);
+      }
+      .connect-card p {
+        font-size: 0.9rem;
+        color: var(--muted);
+        margin-bottom: 1.5rem;
+      }
+      input {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        color: var(--text-bright);
+        padding: 12px;
+        font-size: 1.2rem;
+        text-align: center;
+        border-radius: 6px;
+        width: 200px;
+        margin-bottom: 1rem;
+        letter-spacing: 4px;
+        outline: none;
+      }
+      input:focus {
+        border-color: #58a6ff;
+      }
+      .btn {
+        background: var(--accent);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: background 0.2s;
+      }
+      .btn:hover {
+        background: var(--accent-hover);
+      }
+      .error-msg {
+        color: #f85149;
+        font-size: 0.85rem;
+        margin-bottom: 1rem;
+        display: none;
+      }
 
-        /* Instructions Section */
-        .section {
-            padding: 80px 2rem;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-        .section-title {
-            text-align: center;
-            font-size: 2rem;
-            color: var(--text-bright);
-            margin-bottom: 3rem;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-        .card {
-            background: var(--bg-secondary);
-            padding: 2rem;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-        }
-        .card h4 {
-            margin-top: 0;
-            color: var(--text-bright);
-            font-size: 1.2rem;
-        }
-        code {
-            display: block;
-            background: var(--bg);
-            padding: 12px;
-            border-radius: 6px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.85rem;
-            color: #79c0ff;
-            margin: 1rem 0;
-            overflow-x: auto;
-            border: 1px solid var(--border);
-        }
+      /* Instructions Section */
+      .section {
+        padding: 80px 2rem;
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+      .section-title {
+        text-align: center;
+        font-size: 2rem;
+        color: var(--text-bright);
+        margin-bottom: 3rem;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+      }
+      .card {
+        background: var(--bg-secondary);
+        padding: 2rem;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+      }
+      .card h4 {
+        margin-top: 0;
+        color: var(--text-bright);
+        font-size: 1.2rem;
+      }
+      code {
+        display: block;
+        background: var(--bg);
+        padding: 12px;
+        border-radius: 6px;
+        font-family: "Courier New", monospace;
+        font-size: 0.85rem;
+        color: #79c0ff;
+        margin: 1rem 0;
+        overflow-x: auto;
+        border: 1px solid var(--border);
+      }
 
-        /* Terminal Overlay */
-        #terminal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(13, 17, 23, 0.98);
-            z-index: 2000;
-            flex-direction: column;
-        }
-        .terminal-header {
-            background: #161b22;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border);
-        }
-        .terminal-close {
-            cursor: pointer;
-            background: #f85149;
-            color: white;
-            border: none;
-            padding: 5px 12px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-        }
-        #terminal-container {
-            flex-grow: 1;
-            width: 100%;
-            height: 100%;
-        }
+      /* Terminal Overlay */
+      #terminal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(13, 17, 23, 0.98);
+        z-index: 2000;
+        flex-direction: column;
+      }
+      .terminal-header {
+        background: #161b22;
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border);
+      }
+      .terminal-close {
+        cursor: pointer;
+        background: #f85149;
+        color: white;
+        border: none;
+        padding: 5px 12px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+      }
+      #terminal-container {
+        flex-grow: 1;
+        width: 100%;
+        height: 100%;
+      }
 
-        /* Footer */
-        footer {
-            padding: 40px 2rem;
-            text-align: center;
-            border-top: 1px solid var(--border);
-            color: var(--muted);
-            font-size: 0.9rem;
-        }
-        .footer-links {
-            margin-bottom: 1rem;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-        .footer-links a {
-            color: var(--muted);
-            text-decoration: none;
-        }
-        .footer-links a:hover { color: var(--text); }
+      /* Footer */
+      footer {
+        padding: 40px 2rem;
+        text-align: center;
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+      .footer-links {
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+      }
+      .footer-links a {
+        color: var(--muted);
+        text-decoration: none;
+      }
+      .footer-links a:hover {
+        color: var(--text);
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <nav>
-        <a href="#" class="logo"><span>⚡</span> Terminal Share</a>
-        <div class="nav-links">
-            <a href="#how-it-works">How it Works</a>
-            <a href="#install">Install</a>
-            <a href="https://github.com/Rudresh-11/terminal-share" target="_blank">GitHub</a>
-        </div>
+      <a href="#" class="logo"><span>⚡</span> Terminal Share</a>
+      <div class="nav-links">
+        <a href="#how-it-works">How it Works</a>
+        <a href="#install">Install</a>
+        <a href="https://github.com/Rudresh-11/terminal-share" target="_blank">GitHub</a>
+      </div>
     </nav>
 
     <div class="hero">
-        <h1>Share your terminal in seconds.</h1>
-        <p>The fastest way to collaborate in real-time. Secure, temporary, and completely mirroring.</p>
+      <h1>Share your terminal in seconds.</h1>
+      <p>The fastest way to collaborate in real-time. Secure, temporary, and completely mirroring.</p>
 
-        <div class="connect-card" id="auth-box">
-            <h3>Connect to a Session</h3>
-            <p>Enter the 6-digit code from the agent</p>
-            <div id="error" class="error-msg">Invalid session code. Please try again.</div>
-            <input type="text" id="session-code" maxlength="6" placeholder="000000" spellcheck="false">
-            <br>
-            <button id="connect-btn" class="btn">Connect Now</button>
-        </div>
+      <div class="connect-card" id="auth-box">
+        <h3>Connect to a Session</h3>
+        <p>Enter the 6-digit code from the agent</p>
+        <div id="error" class="error-msg">Invalid session code. Please try again.</div>
+        <input type="text" id="session-code" maxlength="6" placeholder="000000" spellcheck="false" />
+        <br />
+        <button id="connect-btn" class="btn">Connect Now</button>
+      </div>
     </div>
 
     <div id="how-it-works" class="section">
-        <h2 class="section-title">How it Works</h2>
-        <div class="grid">
-            <div class="card">
-                <h4>1. Run the Agent</h4>
-                <p>Start the agent on your host machine. It will generate a unique 6-digit session code.</p>
-            </div>
-            <div class="card">
-                <h4>2. Share the Code</h4>
-                <p>Give that 6-digit code to your collaborator or enter it here on the website.</p>
-            </div>
-            <div class="card">
-                <h4>3. Real-time Mirroring</h4>
-                <p>The collaborator sees your terminal output and can send keystrokes back in real-time.</p>
-            </div>
+      <h2 class="section-title">How it Works</h2>
+      <div class="grid">
+        <div class="card">
+          <h4>1. Run the Agent</h4>
+          <p>Start the agent on your host machine. It will generate a unique 6-digit session code.</p>
         </div>
+        <div class="card">
+          <h4>2. Share the Code</h4>
+          <p>Give that 6-digit code to your collaborator or enter it here on the website.</p>
+        </div>
+        <div class="card">
+          <h4>3. Real-time Mirroring</h4>
+          <p>The collaborator sees your terminal output and can send keystrokes back in real-time.</p>
+        </div>
+      </div>
     </div>
 
     <div id="install" class="section">
-        <h2 class="section-title">Quick Installation</h2>
-        <div class="grid">
-            <div class="card">
-                <h4>Linux & macOS</h4>
-                <p>Run this command in your terminal:</p>
-                <code>curl -fsSL https://terminal-share.onrender.com/install.sh | sh</code>
-            </div>
-            <div class="card">
-                <h4>Windows (PowerShell)</h4>
-                <p>Run this command in PowerShell:</p>
-                <code>iwr -useb https://terminal-share.onrender.com/install.ps1 | iex</code>
-            </div>
+      <h2 class="section-title">Quick Installation</h2>
+      <div class="grid">
+        <div class="card">
+          <h4>Start Your Session</h4>
+          <p>Run this command in your terminal:</p>
+          <code>npx terminal-share</code>
         </div>
+      </div>
     </div>
 
     <div id="terminal-overlay">
-        <div class="terminal-header">
-            <span style="font-weight: 600; color: var(--text-bright)">Terminal Session Active</span>
-            <button class="terminal-close" id="close-term">Disconnect</button>
-        </div>
-        <div id="terminal-container"></div>
+      <div class="terminal-header">
+        <span style="font-weight: 600; color: var(--text-bright)">Terminal Session Active</span>
+        <button class="terminal-close" id="close-term">Disconnect</button>
+      </div>
+      <div id="terminal-container"></div>
     </div>
 
     <footer>
-        <div class="footer-links">
-            <a href="#">Privacy Policy</a>
-            <a href="#">Terms of Service</a>
-            <a href="#">Contact</a>
-        </div>
-        <p>&copy; 2026 Terminal Share. Built for developers.</p>
+      <div class="footer-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Contact</a>
+      </div>
+      <p>&copy; 2026 Terminal Share. Built for developers.</p>
     </footer>
 
     <script>
-        const socket = io();
-        let term = null;
-        let currentSessionId = null;
+      const socket = io();
+      let term = null;
+      let currentSessionId = null;
 
-        const authBox = document.getElementById('auth-box');
-        const terminalOverlay = document.getElementById('terminal-overlay');
-        const codeInput = document.getElementById('session-code');
-        const connectBtn = document.getElementById('connect-btn');
-        const errorDiv = document.getElementById('error');
-        const closeTermBtn = document.getElementById('close-term');
+      const authBox = document.getElementById("auth-box");
+      const terminalOverlay = document.getElementById("terminal-overlay");
+      const codeInput = document.getElementById("session-code");
+      const connectBtn = document.getElementById("connect-btn");
+      const errorDiv = document.getElementById("error");
+      const closeTermBtn = document.getElementById("close-term");
 
-        connectBtn.onclick = () => {
-            const code = codeInput.value;
-            if (code.length !== 6) {
-                showError('Code must be exactly 6 digits');
-                return;
-            }
+      connectBtn.onclick = () => {
+        const code = codeInput.value;
+        if (code.length !== 6) {
+          showError("Code must be exactly 6 digits");
+          return;
+        }
 
-            currentSessionId = code;
-            socket.emit('join-session', code);
-        };
+        currentSessionId = code;
+        socket.emit("join-session", code);
+      };
 
-        socket.on('session-joined', ({ status, message }) => {
-            if (status === 'success') {
-                startTerminal();
-            } else {
-                showError(message || 'Connection failed');
-            }
+      socket.on("session-joined", ({ status, message }) => {
+        if (status === "success") {
+          startTerminal();
+        } else {
+          showError(message || "Connection failed");
+        }
+      });
+      socket.on("session-ended", () => {
+        alert("Host disconnected");
+
+        if (term) {
+          term.dispose();
+          term = null;
+        }
+
+        terminalOverlay.style.display = "none";
+      });
+
+      function showError(msg) {
+        errorDiv.textContent = msg;
+        errorDiv.style.display = "block";
+        setTimeout(() => {
+          errorDiv.style.display = "none";
+        }, 3000);
+      }
+
+      function startTerminal() {
+        terminalOverlay.style.display = "flex";
+
+        term = new Terminal({
+          cursorBlink: true,
+          theme: {
+            background: "#1e1e1e",
+            foreground: "#cccccc",
+          },
+          fontSize: 14,
+          fontFamily: 'Menlo, Monaco, "Courier New", monospace',
         });
 
-        function showError(msg) {
-            errorDiv.textContent = msg;
-            errorDiv.style.display = 'block';
-            setTimeout(() => { errorDiv.style.display = 'none'; }, 3000);
+        const fitAddon = new FitAddon.FitAddon();
+
+        term.loadAddon(fitAddon);
+
+        term.open(document.getElementById("terminal-container"));
+
+        setTimeout(() => {
+          fitAddon.fit();
+          term.focus();
+        }, 50);
+
+        window.addEventListener("resize", () => {
+          fitAddon.fit();
+        });
+
+        term.onData((data) => {
+          socket.emit("terminal-input", {
+            sessionId: currentSessionId,
+            data,
+          });
+        });
+
+        term.onResize(({ cols, rows }) => {
+          socket.emit("resize", {
+            sessionId: currentSessionId,
+            cols,
+            rows,
+          });
+        });
+      }
+      socket.on("terminal-output", (data) => {
+        console.log("FRONTEND GOT:", data);
+
+        if (term) {
+          term.write(data);
         }
-
-        function startTerminal() {
-            terminalOverlay.style.display = 'flex';
-
-            term = new Terminal({
-                cursorBlink: true,
-                theme: {
-                    background: '#1e1e1e',
-                    foreground: '#cccccc'
-                },
-                fontSize: 14,
-                fontFamily: 'Menlo, Monaco, "Courier New", monospace'
-            });
-
-            term.open(document.getElementById('terminal-container'));
-
-            socket.on('terminal-output', (data) => term.write(data));
-            term.onData((data) => socket.emit('terminal-input', { sessionId: currentSessionId, data }));
+      });
+      closeTermBtn.onclick = () => {
+        terminalOverlay.style.display = "none";
+        if (term) {
+          term.dispose();
+          term = null;
         }
-
-        closeTermBtn.onclick = () => {
-            terminalOverlay.style.display = 'none';
-            if (term) {
-                term.dispose();
-                term = null;
-            }
-            window.location.reload(); // Refresh to reset session state
-        };
+        window.location.reload(); // Refresh to reset session state
+      };
     </script>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/@xterm/addon-fit/lib/addon-fit.js"></script>
+  </body>
 </html>
