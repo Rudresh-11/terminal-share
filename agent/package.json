@@ -1,10 +1,10 @@
 {
-  "name": "terminal-share",
+  "name": "termirror",
   "version": "1.0.0",
   "description": "",
   "main": "agent.js",
   "bin": {
-  "terminal-share": "./agent.js"
+  "termirror": "./agent.js"
 },
   "pkg": {
     "targets": [

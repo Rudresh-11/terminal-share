@@ -8,7 +8,7 @@ const path = require("path");
 const { program } = require("commander");
 
 program
-  .name("terminal-share")
+  .name("termirror")
   .description("Secure collaborative terminal sharing over WebSockets")
   .version("1.0.0")
   .option("-t, --tail", "print mirrored terminal output locally")
@@ -20,9 +20,9 @@ program.addHelpText(
   `
 Examples:
 
-  $ terminal-share
-  $ terminal-share --tail
-  $ terminal-share --relay http://localhost:3000
+  $ termirror
+  $ termirror --tail
+  $ termirror --relay http://localhost:3000
 
 Environment Variables:
 
