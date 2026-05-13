@@ -1,10 +1,10 @@
 {
-  "name": "termirror",
-  "version": "1.0.0",
+  "name": "@rudresh-11/termirror",
+  "version": "1.0.1",
   "description": "",
   "main": "agent.js",
   "bin": {
-  "termirror": "./agent.js"
+  "termirror": "agent.js"
 },
   "pkg": {
     "targets": [
