@@ -22,6 +22,8 @@ io.on("connection", (socket) => {
     if (/^\d{6}$/.test(sessionId)) {
       activeSessions.set(sessionId, {
         agentSocketId: socket.id,
+        createdAt: Date.now(),
+        viewers: 0,
       });
 
       socket.join(sessionId);
@@ -45,7 +47,14 @@ io.on("connection", (socket) => {
         status: "success",
       });
 
-      socket.to(sessionId).emit("user-connected");
+      socket.to(sessionId).emit("user-connected", {
+        viewers: activeSessions.get(sessionId).viewers,
+      });
+
+      activeSessions.get(sessionId).viewers++;
+      console.log(`Viewer joined session: ${sessionId}`);
+      const viewers = activeSessions.get(sessionId).viewers;
+      io.to(sessionId).emit("viewer-count", viewers);
     } else {
       socket.emit("session-joined", {
         status: "error",
@@ -56,8 +65,6 @@ io.on("connection", (socket) => {
 
   // Relay terminal output from Agent -> Web
   socket.on("terminal-data", ({ sessionId, data }) => {
-    // console.log("SERVER GOT TERMINAL DATA");
-
     io.to(sessionId).emit("terminal-output", data);
   });
 
@@ -81,7 +88,16 @@ io.on("connection", (socket) => {
 
     // Notify agent when viewer disconnects
     if (socket.role === "viewer" && socket.sessionId) {
-      socket.to(socket.sessionId).emit("viewer-disconnected");
+      const session = activeSessions.get(socket.sessionId);
+
+      if (session) {
+        session.viewers = Math.max(0, session.viewers - 1);
+        io.to(socket.sessionId).emit("viewer-count", session.viewers);
+      }
+
+      socket.to(socket.sessionId).emit("viewer-disconnected", {
+        viewers: session?.viewers || 0,
+      });
     }
   });
 
@@ -90,6 +106,22 @@ io.on("connection", (socket) => {
       cols,
       rows,
     });
+  });
+
+  socket.on("agent-disconnected", (sessionId) => {
+    console.log(`Agent disconnected: ${sessionId}`);
+
+    activeSessions.delete(sessionId);
+
+    io.to(sessionId).emit("session-ended");
+  });
+
+  socket.on("stop-session", (sessionId) => {
+    const session = activeSessions.get(sessionId);
+
+    if (session) {
+      io.to(session.agentSocketId).emit("force-stop");
+    }
   });
 });
 

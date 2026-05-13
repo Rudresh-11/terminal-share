@@ -7,16 +7,31 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css" />
     <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
     <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap"
+      rel="stylesheet" />
     <style>
       :root {
-        --bg: #0d1117;
-        --bg-secondary: #161b22;
-        --text: #c9d1d9;
-        --text-bright: #f0f6fc;
-        --accent: #238636;
-        --accent-hover: #2ea043;
-        --border: #30363d;
-        --muted: #8b949e;
+        --bg: #0a0a0a;
+        --bg-card: #141414;
+        --bg-card2: #1a1a1a;
+        --text: #a0a0a0;
+        --text-bright: #f0f0f0;
+        --text-dim: #555;
+        --accent: #e8e8e8;
+        --accent-green: #00ff88;
+        --border: #2a2a2a;
+        --border-light: #333;
+        --mono: "DM Mono", "Courier New", monospace;
+        --serif: "DM Serif Display", Georgia, serif;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
       }
 
       body {
@@ -24,165 +39,444 @@
         padding: 0;
         background-color: var(--bg);
         color: var(--text);
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+        font-family: var(--mono);
         scroll-behavior: smooth;
+        overflow-x: hidden;
       }
 
-      /* Navbar */
+      /* ─── NAVBAR ─────────────────────────────────────── */
       nav {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 1rem 2rem;
-        background: rgba(13, 17, 23, 0.8);
-        backdrop-filter: blur(10px);
+        padding: 1.25rem 3rem;
+        background: var(--bg);
         position: fixed;
         top: 0;
         width: 100%;
-        box-sizing: border-box;
         z-index: 1000;
         border-bottom: 1px solid var(--border);
       }
+
       .logo {
-        font-size: 1.2rem;
-        font-weight: 700;
+        font-family: var(--mono);
+        font-size: 0.85rem;
+        font-weight: 500;
         color: var(--text-bright);
         text-decoration: none;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 10px;
       }
+      .logo-box {
+        width: 28px;
+        height: 28px;
+        background: var(--text-bright);
+        color: var(--bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0;
+      }
+      .logo-dot {
+        color: var(--text-dim);
+      }
+
       .nav-links {
         display: flex;
-        gap: 2rem;
+        gap: 2.5rem;
+        align-items: center;
       }
       .nav-links a {
-        color: var(--text);
+        color: var(--text-dim);
         text-decoration: none;
-        font-size: 0.9rem;
+        font-size: 0.72rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
         transition: color 0.2s;
       }
       .nav-links a:hover {
         color: var(--text-bright);
       }
+      .nav-links a.nav-cta {
+        color: var(--text-bright);
+        border: 1px solid var(--border-light);
+        padding: 6px 14px;
+      }
+      .nav-links a.nav-cta:hover {
+        background: var(--text-bright);
+        color: var(--bg);
+      }
 
-      /* Hero Section */
+      /* ─── HERO ───────────────────────────────────────── */
       .hero {
-        padding: 160px 2rem 80px;
-        text-align: center;
-        max-width: 900px;
+        min-height: 100vh;
+        padding-top: 72px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+        max-width: 1400px;
         margin: 0 auto;
-      }
-      h1 {
-        font-size: 3.5rem;
-        color: var(--text-bright);
-        margin-bottom: 1rem;
-        line-height: 1.2;
-      }
-      .hero p {
-        font-size: 1.25rem;
-        color: var(--muted);
-        margin-bottom: 2.5rem;
+        padding-left: 3rem;
+        padding-right: 3rem;
+        gap: 4rem;
       }
 
-      /* Connection Card */
-      .connect-card {
-        background: var(--bg-secondary);
-        padding: 2.5rem;
-        border-radius: 16px;
-        border: 1px solid var(--border);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        max-width: 450px;
-        margin: 0 auto;
-        text-align: center;
+      .hero-left {
       }
-      .connect-card h3 {
-        margin: 0 0 1rem;
-        color: var(--text-bright);
-      }
-      .connect-card p {
-        font-size: 0.9rem;
-        color: var(--muted);
+
+      .hero-eyebrow {
+        font-size: 0.7rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--text-dim);
         margin-bottom: 1.5rem;
       }
-      input {
-        background: var(--bg);
-        border: 1px solid var(--border);
+
+      h1 {
+        font-family: var(--serif);
+        font-size: clamp(3rem, 5vw, 5.5rem);
         color: var(--text-bright);
-        padding: 12px;
-        font-size: 1.2rem;
-        text-align: center;
-        border-radius: 6px;
-        width: 200px;
+        margin: 0 0 1.5rem;
+        line-height: 1.05;
+        font-style: italic;
+        letter-spacing: -0.01em;
+      }
+
+      .hero-sub {
+        font-size: 0.85rem;
+        color: var(--text);
+        line-height: 1.8;
+        margin-bottom: 3rem;
+        max-width: 400px;
+        font-weight: 300;
+      }
+
+      /* ─── CONNECT CARD (hero left bottom) ──────────── */
+      .connect-area {
+        border-top: 1px solid var(--border);
+        padding-top: 2rem;
+      }
+
+      .connect-label {
+        font-size: 0.65rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--text-dim);
         margin-bottom: 1rem;
-        letter-spacing: 4px;
+      }
+
+      .connect-row {
+        display: flex;
+        gap: 0;
+      }
+
+      input {
+        background: transparent;
+        border: 1px solid var(--border-light);
+        border-right: none;
+        color: var(--text-bright);
+        padding: 14px 20px;
+        font-size: 1rem;
+        font-family: var(--mono);
+        letter-spacing: 0.3em;
         outline: none;
+        width: 260px;
+        flex-shrink: 0;
+        transition: border-color 0.2s;
+      }
+      input::placeholder {
+        color: var(--text-dim);
+        letter-spacing: 0.2em;
       }
       input:focus {
-        border-color: #58a6ff;
+        border-color: var(--text);
       }
+
       .btn {
-        background: var(--accent);
-        color: white;
+        background: var(--text-bright);
+        color: var(--bg);
         border: none;
-        padding: 12px 24px;
-        border-radius: 6px;
+        padding: 14px 28px;
         cursor: pointer;
-        font-weight: 600;
-        transition: background 0.2s;
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        font-weight: 500;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        transition:
+          background 0.2s,
+          color 0.2s;
+        white-space: nowrap;
       }
       .btn:hover {
-        background: var(--accent-hover);
+        background: var(--accent-green);
+        color: var(--bg);
       }
+
       .error-msg {
-        color: #f85149;
-        font-size: 0.85rem;
-        margin-bottom: 1rem;
+        color: #ff4444;
+        font-size: 0.75rem;
+        margin-top: 0.75rem;
+        letter-spacing: 0.05em;
         display: none;
       }
 
-      /* Instructions Section */
-      .section {
-        padding: 80px 2rem;
-        max-width: 1000px;
-        margin: 0 auto;
+      /* ─── HERO RIGHT PANEL ───────────────────────────── */
+      .hero-right {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
       }
-      .section-title {
-        text-align: center;
-        font-size: 2rem;
-        color: var(--text-bright);
-        margin-bottom: 3rem;
-      }
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-      }
-      .card {
-        background: var(--bg-secondary);
-        padding: 2rem;
-        border-radius: 12px;
-        border: 1px solid var(--border);
-      }
-      .card h4 {
-        margin-top: 0;
-        color: var(--text-bright);
-        font-size: 1.2rem;
-      }
-      code {
-        display: block;
-        background: var(--bg);
-        padding: 12px;
-        border-radius: 6px;
-        font-family: "Courier New", monospace;
-        font-size: 0.85rem;
-        color: #79c0ff;
-        margin: 1rem 0;
-        overflow-x: auto;
+
+      .panel {
+        background: var(--bg-card);
         border: 1px solid var(--border);
       }
 
-      /* Terminal Overlay */
+      .panel-header {
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .panel-label {
+        font-size: 0.65rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+      }
+      .panel-body {
+        padding: 20px;
+      }
+
+      /* install panel */
+      .os-label {
+        font-size: 0.6rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        margin-bottom: 8px;
+      }
+      .install-cmd {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        padding: 12px 16px;
+        font-family: var(--mono);
+        font-size: 0.78rem;
+        color: #79c0ff;
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .copy-icon {
+        color: var(--text-dim);
+        cursor: pointer;
+        font-size: 0.7rem;
+        letter-spacing: 0.05em;
+        transition: color 0.2s;
+      }
+      .copy-icon:hover {
+        color: var(--text-bright);
+      }
+
+      /* terminal mockup panel */
+      .term-mock {
+        background: #111;
+        border: 1px solid var(--border);
+      }
+      .term-mock-bar {
+        background: var(--bg-card2);
+        padding: 10px 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-bottom: 1px solid var(--border);
+      }
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .dot-r {
+        background: #ff5f57;
+      }
+      .dot-y {
+        background: #febc2e;
+      }
+      .dot-g {
+        background: #28c840;
+      }
+      .term-mock-body {
+        padding: 16px;
+        font-family: var(--mono);
+        font-size: 0.78rem;
+        line-height: 1.8;
+      }
+      .t-prompt {
+        color: var(--accent-green);
+      }
+      .t-cmd {
+        color: var(--text-bright);
+      }
+      .t-info {
+        color: #555;
+      }
+      .t-ok {
+        color: var(--accent-green);
+        font-weight: 500;
+      }
+      .t-cursor {
+        display: inline-block;
+        width: 8px;
+        height: 14px;
+        background: var(--accent-green);
+        animation: blink 1s step-end infinite;
+        vertical-align: middle;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+
+      /* ─── STATS BAR ───────────────────────────────────── */
+      .stats-bar {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+      }
+      .stat-item {
+        padding: 20px 24px;
+        border-right: 1px solid var(--border);
+      }
+      .stat-item:last-child {
+        border-right: none;
+      }
+      .stat-label {
+        font-size: 0.6rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        margin-bottom: 6px;
+      }
+      .stat-value {
+        font-family: var(--serif);
+        font-size: 1.8rem;
+        color: var(--text-bright);
+        font-style: italic;
+        line-height: 1;
+      }
+
+      /* ─── HOW IT WORKS ───────────────────────────────── */
+      .section {
+        padding: 100px 3rem;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .section-eyebrow {
+        font-size: 0.65rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        margin-bottom: 1rem;
+      }
+
+      .section-title {
+        font-family: var(--serif);
+        font-size: clamp(2rem, 3vw, 3.5rem);
+        color: var(--text-bright);
+        margin: 0 0 4rem;
+        font-style: italic;
+        line-height: 1.1;
+      }
+
+      .steps-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0;
+        border: 1px solid var(--border);
+      }
+
+      .step {
+        padding: 2.5rem;
+        border-right: 1px solid var(--border);
+        position: relative;
+      }
+      .step:last-child {
+        border-right: none;
+      }
+
+      .step-number {
+        font-size: 0.6rem;
+        letter-spacing: 0.2em;
+        color: var(--text-dim);
+        text-transform: uppercase;
+        margin-bottom: 1.5rem;
+      }
+
+      .step h4 {
+        font-family: var(--mono);
+        font-size: 0.85rem;
+        color: var(--text-bright);
+        margin: 0 0 1rem;
+        font-weight: 500;
+        letter-spacing: 0.05em;
+      }
+
+      .step p {
+        font-size: 0.8rem;
+        color: var(--text);
+        line-height: 1.8;
+        margin: 0;
+        font-weight: 300;
+      }
+
+      /* ─── FOOTER ─────────────────────────────────────── */
+      footer {
+        padding: 2rem 3rem;
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.7rem;
+        color: var(--text-dim);
+        letter-spacing: 0.05em;
+      }
+      .footer-links {
+        display: flex;
+        gap: 2rem;
+      }
+      .footer-links a {
+        color: var(--text-dim);
+        text-decoration: none;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        font-size: 0.65rem;
+        transition: color 0.2s;
+      }
+      .footer-links a:hover {
+        color: var(--text);
+      }
+      .footer-right {
+        font-size: 0.65rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      /* ─── TERMINAL OVERLAY (unchanged behavior) ──────── */
       #terminal-overlay {
         display: none;
         position: fixed;
@@ -190,26 +484,40 @@
         left: 0;
         width: 100vw;
         height: 100vh;
-        background: rgba(13, 17, 23, 0.98);
+        background: rgba(10, 10, 10, 0.98);
         z-index: 2000;
         flex-direction: column;
       }
       .terminal-header {
-        background: #161b22;
-        padding: 10px 20px;
+        background: var(--bg-card);
+        padding: 12px 24px;
         display: flex;
         justify-content: space-between;
         align-items: center;
         border-bottom: 1px solid var(--border);
       }
+      .terminal-header span {
+        font-size: 0.72rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--text-bright);
+      }
       .terminal-close {
         cursor: pointer;
-        background: #f85149;
+        background: transparent;
+        color: var(--text-dim);
+        border: 1px solid var(--border-light);
+        padding: 6px 14px;
+        font-family: var(--mono);
+        font-size: 0.65rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        transition: all 0.2s;
+      }
+      .terminal-close:hover {
+        background: #ff4444;
         color: white;
-        border: none;
-        padding: 5px 12px;
-        border-radius: 4px;
-        font-size: 0.8rem;
+        border-color: #ff4444;
       }
       #terminal-container {
         flex-grow: 1;
@@ -217,97 +525,186 @@
         height: 100%;
       }
 
-      /* Footer */
-      footer {
-        padding: 40px 2rem;
-        text-align: center;
+      /* ─── LATENCY STRIP ──────────────────────────────── */
+      .latency-strip {
         border-top: 1px solid var(--border);
-        color: var(--muted);
-        font-size: 0.9rem;
-      }
-      .footer-links {
-        margin-bottom: 1rem;
+        padding: 0.6rem 3rem;
         display: flex;
-        justify-content: center;
-        gap: 20px;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.6rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--text-dim);
       }
-      .footer-links a {
-        color: var(--muted);
-        text-decoration: none;
+      .latency-dot {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--accent-green);
+        margin-right: 6px;
+        animation: pulse 2s ease-in-out infinite;
       }
-      .footer-links a:hover {
-        color: var(--text);
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.4;
+          transform: scale(0.8);
+        }
       }
     </style>
   </head>
   <body>
+    <!-- NAVBAR -->
     <nav>
-      <a href="#" class="logo"><span>⚡</span> Terminal Share</a>
+      <a href="#" class="logo">
+        <span class="logo-box">T</span>
+        TERMINAL<span class="logo-dot">.</span>SHARE
+      </a>
       <div class="nav-links">
-        <a href="#how-it-works">How it Works</a>
-        <a href="#install">Install</a>
-        <a href="https://github.com/Rudresh-11/terminal-share" target="_blank">GitHub</a>
+        <a href="#how-it-works">Protocol</a>
+        <a href="#install">Documentation</a>
+        <a href="https://github.com/Rudresh-11/terminal-share" target="_blank" class="nav-cta">GitHub</a>
       </div>
     </nav>
 
+    <!-- HERO -->
     <div class="hero">
-      <h1>Share your terminal in seconds.</h1>
-      <p>The fastest way to collaborate in real-time. Secure, temporary, and completely mirroring.</p>
+      <div class="hero-left">
+        <div class="hero-eyebrow">// Secure Remote Terminal Mirroring</div>
+        <h1>Live Stream<br />Your Terminal.</h1>
+        <p class="hero-sub">
+          Simple, secure terminal sharing for collaborative debugging and demonstrations. Zero configuration required.
+        </p>
 
-      <div class="connect-card" id="auth-box">
-        <h3>Connect to a Session</h3>
-        <p>Enter the 6-digit code from the agent</p>
-        <div id="error" class="error-msg">Invalid session code. Please try again.</div>
-        <input type="text" id="session-code" maxlength="6" placeholder="000000" spellcheck="false" />
-        <br />
-        <button id="connect-btn" class="btn">Connect Now</button>
+        <div class="connect-area" id="auth-box">
+          <div class="connect-label">Enter Access Code</div>
+          <div id="error" class="error-msg">Invalid session code. Please try again.</div>
+          <div class="connect-row">
+            <input type="text" id="session-code" maxlength="6" placeholder="ENTER 6-DIGIT CODE" spellcheck="false" />
+            <button id="connect-btn" class="btn">Join Session</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-right">
+        <!-- Install panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <span class="panel-label">Host a Session</span>
+          </div>
+
+          <div class="panel-body">
+            <div style="font-size: 0.72rem; line-height: 1.8; color: var(--text); margin-bottom: 1.5rem">
+              Requires
+              <a
+                href="https://nodejs.org/en/download"
+                target="_blank"
+                style="color: var(--text-bright); text-decoration: none;">
+                Node.js
+              </a>
+              to be installed on the host machine.
+            </div>
+
+            <div class="os-label">Cross-platform Command</div>
+
+            <div class="install-cmd" style="margin-bottom: 0">
+              <span id="install-command">npx terminal-share</span>
+
+              <span class="copy-icon" onclick="copyInstallCommand()"> copy </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Terminal mockup -->
+        <div class="term-mock">
+          <div class="term-mock-bar">
+            <span class="dot dot-r"></span>
+            <span class="dot dot-y"></span>
+            <span class="dot dot-g"></span>
+          </div>
+          <div class="term-mock-body">
+            <div><span class="t-prompt">guest@terminal:~$</span> <span class="t-cmd">npx terminal-share </span></div>
+            <div class="t-info">[info] Initializing PTY layer...</div>
+            <div class="t-info">[info] Connected to relay node-1</div>
+            <div><span class="t-ok">[ok] Streaming active at room: 48F-A29</span></div>
+            <div>&nbsp;</div>
+            <div><span class="t-prompt">master</span> <span class="t-cmd">git status</span></div>
+            <div class="t-info"># On branch master</div>
+            <div class="t-info"># Your branch is up to date with 'origin/master'.</div>
+            <div><span class="t-cursor"></span></div>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-bar">
+          <div class="stat-item">
+            <div class="stat-label">Global Uplink</div>
+            <div class="stat-value">1.2 Gbps</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Relay Nodes</div>
+            <div class="stat-value">42 Active</div>
+          </div>
+        </div>
       </div>
     </div>
 
+    <!-- LATENCY STRIP -->
+    <div class="latency-strip">
+      <span>Pipes via Node-PTY &amp; xterm.js</span>
+      <span><span class="latency-dot"></span>Live &mdash; Latency &lt;14ms avg</span>
+    </div>
+
+    <!-- HOW IT WORKS -->
     <div id="how-it-works" class="section">
-      <h2 class="section-title">How it Works</h2>
-      <div class="grid">
-        <div class="card">
-          <h4>1. Run the Agent</h4>
+      <div class="section-eyebrow">// How it Works</div>
+      <h2 class="section-title">Three steps to<br />real-time collaboration.</h2>
+      <div class="steps-grid">
+        <div class="step">
+          <div class="step-number">Step 01</div>
+          <h4>Run the Agent</h4>
           <p>Start the agent on your host machine. It will generate a unique 6-digit session code.</p>
         </div>
-        <div class="card">
-          <h4>2. Share the Code</h4>
+        <div class="step">
+          <div class="step-number">Step 02</div>
+          <h4>Share the Code</h4>
           <p>Give that 6-digit code to your collaborator or enter it here on the website.</p>
         </div>
-        <div class="card">
-          <h4>3. Real-time Mirroring</h4>
+        <div class="step">
+          <div class="step-number">Step 03</div>
+          <h4>Real-time Mirroring</h4>
           <p>The collaborator sees your terminal output and can send keystrokes back in real-time.</p>
         </div>
       </div>
     </div>
 
-    <div id="install" class="section">
-      <h2 class="section-title">Quick Installation</h2>
-      <div class="grid">
-        <div class="card">
-          <h4>Start Your Session</h4>
-          <p>Run this command in your terminal:</p>
-          <code>npx terminal-share</code>
-        </div>
-      </div>
-    </div>
-
+    <!-- TERMINAL OVERLAY (structure preserved for JS) -->
     <div id="terminal-overlay">
       <div class="terminal-header">
-        <span style="font-weight: 600; color: var(--text-bright)">Terminal Session Active</span>
+        <div style="display: flex; align-items: center; gap: 16px">
+          <span>Terminal Session Active</span>
+          <span id="viewer-count" style="color: #00ff88; font-size: 0.7rem; letter-spacing: 0.12em"> 0 VIEWERS </span>
+        </div>
+        <button class="terminal-close" id="stop-term">Stop Session</button>
         <button class="terminal-close" id="close-term">Disconnect</button>
       </div>
       <div id="terminal-container"></div>
     </div>
 
+    <!-- FOOTER -->
     <footer>
       <div class="footer-links">
         <a href="#">Privacy Policy</a>
         <a href="#">Terms of Service</a>
         <a href="#">Contact</a>
       </div>
-      <p>&copy; 2026 Terminal Share. Built for developers.</p>
+      <div class="footer-right">&copy; 2026 Terminal Share / Terminal Protocol Labs</div>
     </footer>
 
     <script>
@@ -321,6 +718,7 @@
       const connectBtn = document.getElementById("connect-btn");
       const errorDiv = document.getElementById("error");
       const closeTermBtn = document.getElementById("close-term");
+      const stopTermBtn = document.getElementById("stop-term");
 
       connectBtn.onclick = () => {
         const code = codeInput.value;
@@ -403,11 +801,16 @@
         });
       }
       socket.on("terminal-output", (data) => {
-        console.log("FRONTEND GOT:", data);
-
         if (term) {
           term.write(data);
         }
+      });
+      socket.on("viewer-count", (count) => {
+        const el = document.getElementById("viewer-count");
+
+        if (!el) return;
+
+        el.textContent = `${count} VIEWER${count === 1 ? "" : "S"}`;
       });
       closeTermBtn.onclick = () => {
         terminalOverlay.style.display = "none";
@@ -415,8 +818,33 @@
           term.dispose();
           term = null;
         }
-        window.location.reload(); // Refresh to reset session state
+        socket.emit("leave-session", currentSessionId);
+        window.location.reload();
       };
+      stopTermBtn.onclick = () => {
+        socket.emit("stop-session", currentSessionId);
+      };
+    </script>
+    <script>
+      async function copyInstallCommand() {
+        const command = document.getElementById("install-command").innerText;
+
+        try {
+          await navigator.clipboard.writeText(command);
+
+          const btn = document.querySelector(".copy-icon");
+
+          const oldText = btn.innerText;
+
+          btn.innerText = "copied";
+
+          setTimeout(() => {
+            btn.innerText = oldText;
+          }, 1200);
+        } catch (err) {
+          console.error("Copy failed", err);
+        }
+      }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@xterm/addon-fit/lib/addon-fit.js"></script>
   </body>
