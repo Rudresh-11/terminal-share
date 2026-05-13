@@ -605,18 +605,26 @@
               <a
                 href="https://nodejs.org/en/download"
                 target="_blank"
-                style="color: var(--text-bright); text-decoration: none;">
+                style="color: var(--text-bright); text-decoration: none">
                 Node.js
               </a>
               to be installed on the host machine.
             </div>
 
-            <div class="os-label">Cross-platform Command</div>
+            <div class="os-label">Install Globally</div>
 
-            <div class="install-cmd" style="margin-bottom: 0">
-              <span id="install-command">npx @rudresh-11/termirror</span>
+            <div class="install-cmd" style="margin-bottom: 1rem">
+              <span id="install-command"> npm i -g @rudresh-11/termirror </span>
 
               <span class="copy-icon" onclick="copyInstallCommand()"> copy </span>
+            </div>
+
+            <div class="os-label">Start Session</div>
+
+            <div class="install-cmd" style="margin-bottom: 0">
+              <span id="run-command"> termirror </span>
+
+              <span class="copy-icon" onclick="copyRunCommand()"> copy </span>
             </div>
           </div>
         </div>
@@ -629,7 +637,9 @@
             <span class="dot dot-g"></span>
           </div>
           <div class="term-mock-body">
-            <div><span class="t-prompt">guest@terminal:~$</span> <span class="t-cmd">npx @rudresh-11/termirror </span></div>
+            <div>
+              <span class="t-prompt">guest@terminal:~$</span> <span class="t-cmd">termirror</span>
+            </div>
             <div class="t-info">[info] Initializing PTY layer...</div>
             <div class="t-info">[info] Connected to relay node-1</div>
             <div><span class="t-ok">[ok] Streaming active at room: 48F-A29</span></div>
@@ -833,6 +843,29 @@
           await navigator.clipboard.writeText(command);
 
           const btn = document.querySelector(".copy-icon");
+
+          const oldText = btn.innerText;
+
+          btn.innerText = "copied";
+
+          setTimeout(() => {
+            btn.innerText = oldText;
+          }, 1200);
+        } catch (err) {
+          console.error("Copy failed", err);
+        }
+      }
+    </script>
+    <script>
+      async function copyRunCommand() {
+        const command = document.getElementById("run-command").innerText;
+
+        try {
+          await navigator.clipboard.writeText(command);
+
+          const buttons = document.querySelectorAll(".copy-icon");
+
+          const btn = buttons[1];
 
           const oldText = btn.innerText;
 
