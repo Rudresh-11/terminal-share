@@ -7,15 +7,41 @@ const dotenv = require("dotenv");
 const path = require("path");
 const { program } = require("commander");
 
-program.option("-t, --tail", "enable test mode").option("--debug", "enable debug logging");
+program
+  .name("terminal-share")
+  .description("Secure collaborative terminal sharing over WebSockets")
+  .version("1.0.0")
+  .option("-t, --tail", "print mirrored terminal output locally")
+  .option("--debug", "enable verbose debug logging")
+  .option("--relay <url>", "override relay server URL");
 
+program.addHelpText(
+  "after",
+  `
+Examples:
+
+  $ terminal-share
+  $ terminal-share --tail
+  $ terminal-share --relay http://localhost:3000
+
+Environment Variables:
+
+  SITE_URL   Override relay server URL
+
+Project:
+
+  https://terminal-share.onrender.com
+`,
+);
+program.showHelpAfterError();
 program.parse();
 
 const options = program.opts();
 
+
 dotenv.config();
 // dotenv.config({ path: path.join(__dirname, "..", ".env.local") });
-const siteUrl = process.env.SITE_URL || "https://terminal-share.onrender.com";
+const siteUrl = options.relay || process.env.SITE_URL || "https://terminal-share.onrender.com";
 
 console.log(`Connecting to relay server at ${siteUrl}...`);
 
