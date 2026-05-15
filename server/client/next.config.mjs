@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  allowedDevOrigins: ["local-origin.dev", "*.local-origin.dev"],
-  output: 'standalone',
+const nextConfig = {  
+  
 }
 
 export default nextConfig
