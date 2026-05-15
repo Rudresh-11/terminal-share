@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: ./backend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - terminal-share
+
+  client:
+    build:
+      context: ./client
+    ports:
+      - "8000:8000"
+    depends_on:
+      - server
+    networks:
+      - terminal-share
+
+networks:
+  terminal-share:
+    driver: bridge

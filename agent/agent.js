@@ -298,7 +298,7 @@ process.on("SIGINT", () => {
   console.log();
   redrawStatus("◌ STOPPED", c.black, c.bgGray);
   if (timerInterval) clearInterval(timerInterval);
-  logWarn(`${c.yellow}Agent shutting down...${c.reset}`);
+  logWarn(`${c.yellow}Shutting down...${c.reset}`);
   socket.emit("agent-disconnected", sessionId);
   if (ptyProcess) ptyProcess.kill();
   socket.disconnect();

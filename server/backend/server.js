@@ -1,18 +1,18 @@
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
-const path = require("path");
+const cors = require("cors");
 
 const app = express();
+app.use(cors());
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+  },
+});
 
 const activeSessions = new Map(); // Store valid 6-digit session IDs
-
-// Serve static files from the server directory (allows users to download install.sh and install.ps1)
-app.use(express.static(__dirname));
-
-app.get("/", (req, res) => res.sendFile(path.join(__dirname, "index.html")));
 
 io.on("connection", (socket) => {
   console.log("Connection established:", socket.id);
@@ -125,4 +125,4 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(3000, () => console.log("Relay Server: http://localhost:3000"));
+server.listen(3001, () => console.log("Relay Server: http://localhost:3001"));
