@@ -5,7 +5,7 @@ services:
     build:
       context: ./backend
     ports:
-      - "3000:3000"
+      - "3001:3001"
     environment:
       - NODE_ENV=production
     networks:
@@ -15,9 +15,11 @@ services:
     build:
       context: ./client
     ports:
-      - "8000:8000"
+      - "3000:3000"
     depends_on:
       - server
+    environment:
+      - NEXT_PUBLIC_SOCKET_URL=http://server:3001
     networks:
       - terminal-share
 
