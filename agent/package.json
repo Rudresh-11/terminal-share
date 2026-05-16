@@ -6,17 +6,10 @@
   "bin": {
   "termirror": "agent.js"
 },
-  "pkg": {
-    "targets": [
-      "node18-win-x64",
-      "node18-linux-x64",
-      "node18-macos-x64"
-    ],
-    "options": "bin-static"
-  },
+ 
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "pkg ."
+    "start": "node agent.js",
+    "dev": "node agent.js --debug --tail"
   },
   "keywords": [],
   "author": "",
