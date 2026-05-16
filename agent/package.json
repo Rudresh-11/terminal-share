@@ -1,23 +1,37 @@
 {
   "name": "@rudresh-11/termirror",
-  "version": "1.0.1",
-  "description": "",
-  "main": "agent.js",
+  "version": "1.0.6",
+  "description": "Minimal collaborative terminal sharing",
+  "main": "src/index.js",
   "bin": {
-  "termirror": "agent.js"
-},
- 
+    "termirror": "agent.js"
+  },
+  "files": [
+    "src",
+    "agent.js",
+    "README.md"
+  ],
   "scripts": {
     "start": "node agent.js",
     "dev": "node agent.js --debug --tail"
   },
-  "keywords": [],
-  "author": "",
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "terminal",
+    "sharing",
+    "pty",
+    "collaboration",
+    "cli"
+  ],
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "ansi-escapes": "^7.3.0",
     "commander": "^14.0.3",
     "dotenv": "^17.4.2",
+    "nanoid": "^5.1.11",
     "node-pty": "^1.1.0",
     "socket.io": "^4.8.3",
     "socket.io-client": "^4.8.3"

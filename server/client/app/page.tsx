@@ -65,7 +65,7 @@ export default function Page() {
             >
               <Link href="https://github.com/Rudresh-11/terminal-share" target="_blank">
                 <Gift className="mr-2 h-3.5 w-3.5" />
-                Gift
+                GitHub
               </Link>
             </Button>
           </nav>
@@ -150,9 +150,9 @@ export default function Page() {
                 </div>
                 {/* Reduced py-3 to py-2 kept verbatim, added group scale animation on the icon inside */}
                 <div className="group flex items-center justify-between border border-border/50 bg-muted/20 px-4 py-2 text-sm transition-colors hover:bg-muted/30">
-                  <code className="font-mono text-foreground/90">npm i -g @rudresh-11/termirror</code>
+                  <code className="font-mono text-foreground/90">npm i -g @rudresh-11/termirror@latest</code>
                   <button
-                    onClick={() => copyText("npm i -g @rudresh-11/termirror", "install")}
+                    onClick={() => copyText("npm i -g @rudresh-11/termirror@latest", "install")}
                     className="flex items-center gap-2 text-xs tracking-[0.18em] text-muted-foreground uppercase transition-colors hover:text-foreground"
                   >
                     {copied === "install" ? <Check className="h-4 w-4 text-green-500 animate-in zoom-in" /> : <Copy className="h-4 w-4 opacity-40 transition-all duration-300 group-hover:opacity-100 group-hover:scale-110" />}

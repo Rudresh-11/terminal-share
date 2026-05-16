@@ -97,7 +97,7 @@ function renderHeader(options) {
     `${status}  ${c.cyan}${config.sessionId}${c.reset}  ${c.gray}${state.viewers} viewer(s)${c.reset}  ${c.gray}${uptime()}${c.reset}`,
     `${c.gray}${config.shell}${c.reset}  ${c.gray}${os.hostname()}${c.reset}`,
     hr(),
-    `${c.dim}open ${config.frontendUrl}/session/${config.sessionId}${c.reset}`,
+    `${c.dim}Live at: ${config.frontendUrl}/session/${config.sessionId}${c.reset}`,
     hr(),
   ];
 
