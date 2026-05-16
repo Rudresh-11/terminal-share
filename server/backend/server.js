@@ -12,6 +12,8 @@ const io = new Server(server, {
   },
 });
 
+app.use(express.json());
+
 app.get("/", (req, res) => {
   res.send("Remote Terminal Relay Server is running.");
 });
@@ -26,7 +28,7 @@ app.get("/sessions", (req, res) => {
 });
 
 app.get("/health", (req, res) => {
-  res.json({ status: "ok" });
+  res.json({ status: "ok" , uptime: process.uptime() , activeSessions: activeSessions.size ,timestamp: new Date().toISOString()});
 });
 
 const activeSessions = new Map(); // Store valid 6-digit session IDs
