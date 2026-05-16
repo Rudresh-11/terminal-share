@@ -79,13 +79,9 @@ function log(type, msg, options) {
 }
 
 function appendLogLine({ ts, type, msg }) {
-  const { rows } = termSize();
-  saveCursor();
-  moveTo(rows, 0);
   write("\n");
   clearLine();
   write(`${c.gray}[${ts}]${c.reset} ${levelColor[type] || ""}${msg}`);
-  restoreCursor();
 }
 
 function renderHeader(options) {
