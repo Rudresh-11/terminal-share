@@ -148,18 +148,35 @@ export default function TerminalView({ sessionCode }: Props) {
           <span className="text-xs text-green-500">{viewerCount} VIEWERS</span>
         </div>
 
-        <Button
-          variant="destructive"
-          size="sm"
-          onClick={() => {
-            socket.emit("stop-session", sessionCode)
-          }}
-        >
-          Stop Session
-        </Button>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2">
+            {/* Button 1: Leave Session */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                router.push("/")
+                // Add any client-side routing or cleanup logic here if needed
+              }}
+            >
+              Leave Session
+            </Button>
+
+            {/* Button 2: Stop Session */}
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={() => {
+                socket.emit("stop-session", sessionCode)
+              }}
+            >
+              Stop Session
+            </Button>
+          </div>
+        </div>
       </div>
 
-      <div className="flex-1 overflow-hidden">
+      <div className="relative flex-1 overflow-hidden">
         <div ref={terminalRef} className="h-full w-full" />
       </div>
     </div>

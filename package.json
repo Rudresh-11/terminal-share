@@ -1,6 +1,0 @@
-{
-	"dependencies": {
-		"nanoid": "^5.1.11",
-		"ansi-escapes": "^7.3.0"
-	}
-}

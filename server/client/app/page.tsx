@@ -28,17 +28,16 @@ export default function Page() {
   }
 
   return (
-    <main className="relative min-h-screen bg-background text-foreground overflow-hidden selection:bg-green-500/30">
-      
+    <main className="relative min-h-screen overflow-hidden bg-background text-foreground selection:bg-green-500/30">
       {/* IMMERSIVE BACKGROUND GRID (Gray colors kept verbatim) */}
-      <div className="absolute inset-0 z-0 pointer-events-none bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] bg-size-[24px_24px]" />
 
       {/* NAVBAR */}
       <header className="sticky top-0 z-50 border-b border-border/50 bg-background/60 backdrop-blur-md transition-shadow duration-300 hover:shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
           <Link
             href="#"
-            className="flex items-center gap-3 text-sm font-medium tracking-[0.2em] transition-opacity hover:opacity-80 group"
+            className="group flex items-center gap-3 text-sm font-medium tracking-[0.2em] transition-opacity hover:opacity-80"
           >
             {/* Added dynamic shadow on hover to the 'T' box */}
             <div className="flex h-7 w-7 items-center justify-center border border-primary/20 bg-primary/5 text-xs shadow-[0_0_10px_rgba(34,197,94,0.1)] transition-all duration-300 group-hover:scale-110 group-hover:shadow-[0_0_15px_rgba(34,197,94,0.2)]">
@@ -51,19 +50,28 @@ export default function Page() {
 
           <nav className="flex items-center gap-6 text-xs tracking-[0.18em] text-muted-foreground uppercase">
             {/* Added focus outline and scale transition to links */}
-            <Link href="#how-it-works" className="transition-all duration-300 hover:text-foreground hover:scale-105">
+            <Link
+              href="#how-it-works"
+              className="transition-all duration-300 hover:scale-105 hover:text-foreground"
+            >
               Protocol
             </Link>
-            <Link href="#" className="transition-all duration-300 hover:text-foreground hover:scale-105">
+            <Link
+              href="#"
+              className="transition-all duration-300 hover:scale-105 hover:text-foreground"
+            >
               Documentation
             </Link>
             {/* Button interaction logic kept same, just slightly smoother transition */}
             <Button
               asChild
               variant="outline"
-              className="h-8 rounded-none border-border/50 bg-background/50 px-3 text-[11px] transition-all duration-300 hover:bg-accent hover:-translate-y-0.5"
+              className="h-8 rounded-none border-border/50 bg-background/50 px-3 text-[11px] transition-all duration-300 hover:-translate-y-0.5 hover:bg-accent"
             >
-              <Link href="https://github.com/Rudresh-11/terminal-share" target="_blank">
+              <Link
+                href="https://github.com/Rudresh-11/terminal-share"
+                target="_blank"
+              >
                 <Gift className="mr-2 h-3.5 w-3.5" />
                 GitHub
               </Link>
@@ -74,16 +82,15 @@ export default function Page() {
 
       {/* HERO (Paddings and Gaps kept exactly as you manually set them) */}
       <section className="relative z-10 mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl gap-10 px-6 py-6 lg:grid-cols-2 lg:items-center">
-        
         {/* LEFT CONTENT */}
-        <div className="flex flex-col justify-center animate-in fade-in slide-in-from-bottom-5 duration-700">
+        <div className="flex animate-in flex-col justify-center duration-700 slide-in-from-bottom-5 fade-in">
           <div className="mb-4 inline-flex items-center gap-2 text-xs tracking-[0.3em] text-muted-foreground uppercase">
             {"// Secure Remote Terminal Mirroring"}
           </div>
 
-          <h1 className="max-w-xl text-5xl font-light leading-[1.1] tracking-tight md:text-7xl">
+          <h1 className="max-w-xl text-5xl leading-[1.1] font-light tracking-tight md:text-7xl">
             Live Stream <br />
-            <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-foreground to-foreground/50">
+            <span className="bg-linear-to-r from-foreground to-foreground/50 bg-clip-text font-semibold text-transparent">
               Your Terminal.
             </span>
           </h1>
@@ -99,7 +106,7 @@ export default function Page() {
             </div>
 
             {/* Input focus states are kept same, just slightly smoother transition on the button hover */}
-            <div className="flex max-w-md transition-all duration-300 focus-within:ring-1 focus-within:ring-foreground/50 focus-within:shadow-[0_0_20px_rgba(34,197,94,0.1)]">
+            <div className="flex max-w-md transition-all duration-300 focus-within:shadow-[0_0_20px_rgba(34,197,94,0.1)] focus-within:ring-1 focus-within:ring-foreground/50">
               <Input
                 value={sessionCode}
                 onChange={(e) => setSessionCode(e.target.value)}
@@ -118,15 +125,14 @@ export default function Page() {
         </div>
 
         {/* RIGHT CONTENT (Space-y-4 kept verbatim) */}
-        <div className="space-y-4 relative animate-in fade-in slide-in-from-right-5 duration-1000 delay-200">
-          
+        <div className="relative animate-in space-y-4 delay-200 duration-1000 slide-in-from-right-5 fade-in">
           {/* Ambient Glow behind Terminal (Kept exact color, added smooth breathing pulse) */}
           <div className="absolute top-1/2 left-1/2 -z-10 h-3/4 w-3/4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-foreground/10 blur-[80px]" />
 
           {/* HOST CARD (Blur and background kept verbatim, added smooth lift on hover) */}
-          <Card className="border-border/50 bg-background/40 backdrop-blur-md shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+          <Card className="border-border/50 bg-background/40 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
             <CardHeader className="border-b border-border/50">
-              <div className="text-xs tracking-[0.25em] text-muted-foreground uppercase flex items-center gap-2">
+              <div className="flex items-center gap-2 text-xs tracking-[0.25em] text-muted-foreground uppercase">
                 <Terminal className="h-4 w-4" /> Host a Session
               </div>
             </CardHeader>
@@ -150,12 +156,23 @@ export default function Page() {
                 </div>
                 {/* Reduced py-3 to py-2 kept verbatim, added group scale animation on the icon inside */}
                 <div className="group flex items-center justify-between border border-border/50 bg-muted/20 px-4 py-2 text-sm transition-colors hover:bg-muted/30">
-                  <code className="font-mono text-foreground/90">npm i -g @rudresh-11/termirror@latest</code>
+                  <code className="font-mono text-foreground/90">
+                    npm i -g @rudresh-11/termirror@latest
+                  </code>
                   <button
-                    onClick={() => copyText("npm i -g @rudresh-11/termirror@latest", "install")}
+                    onClick={() =>
+                      copyText(
+                        "npm i -g @rudresh-11/termirror@latest",
+                        "install"
+                      )
+                    }
                     className="flex items-center gap-2 text-xs tracking-[0.18em] text-muted-foreground uppercase transition-colors hover:text-foreground"
                   >
-                    {copied === "install" ? <Check className="h-4 w-4 text-green-500 animate-in zoom-in" /> : <Copy className="h-4 w-4 opacity-40 transition-all duration-300 group-hover:opacity-100 group-hover:scale-110" />}
+                    {copied === "install" ? (
+                      <Check className="h-4 w-4 animate-in text-green-500 zoom-in" />
+                    ) : (
+                      <Copy className="h-4 w-4 opacity-40 transition-all duration-300 group-hover:scale-110 group-hover:opacity-100" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -165,12 +182,18 @@ export default function Page() {
                   Start Session
                 </div>
                 <div className="group flex items-center justify-between border border-border/50 bg-muted/20 px-4 py-2 text-sm transition-colors hover:bg-muted/30">
-                  <code className="font-mono text-foreground/90">termirror</code>
+                  <code className="font-mono text-foreground/90">
+                    termirror
+                  </code>
                   <button
                     onClick={() => copyText("termirror", "run")}
                     className="flex items-center gap-2 text-xs tracking-[0.18em] text-muted-foreground uppercase transition-colors hover:text-foreground"
                   >
-                    {copied === "run" ? <Check className="h-4 w-4 text-green-500 animate-in zoom-in" /> : <Copy className="h-4 w-4 opacity-40 transition-all duration-300 group-hover:opacity-100 group-hover:scale-110" />}
+                    {copied === "run" ? (
+                      <Check className="h-4 w-4 animate-in text-green-500 zoom-in" />
+                    ) : (
+                      <Copy className="h-4 w-4 opacity-40 transition-all duration-300 group-hover:scale-110 group-hover:opacity-100" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -178,20 +201,24 @@ export default function Page() {
           </Card>
 
           {/* TERMINAL MOCK (Rounded-3xl, bg color, content kept exactly as you manually set them) */}
-          <Card className="relative overflow-hidden rounded-3xl border-border/60 bg-background/50 shadow-2xl ring-1 ring-white/5 p-0 transition-transform duration-300 hover:border-border/100">
+          <Card className="relative overflow-hidden rounded-3xl border-border/60 bg-background/50 p-0 shadow-2xl ring-1 ring-white/5 transition-transform duration-300 hover:border-border">
             {/* Added dynamic scanlines that appear slightly on hover */}
-            <div className="pointer-events-none absolute inset-0 z-10 bg-[linear-gradient(rgba(255,255,255,0)_50%,rgba(0,0,0,0.1)_50%)] bg-[length:100%_4px] opacity-20 transition-opacity duration-300 group-hover:opacity-30 mix-blend-overlay" />
-            
+            <div className="pointer-events-none absolute inset-0 z-10 bg-[linear-gradient(rgba(255,255,255,0)_50%,rgba(0,0,0,0.1)_50%)] bg-size-[100%_4px] opacity-20 mix-blend-overlay transition-opacity duration-300 group-hover:opacity-30" />
+
             <div className="relative z-0 flex items-center gap-2 border-b border-white/10 bg-white/5 px-4 py-2.5">
               <div className="h-2.5 w-2.5 rounded-full bg-red-500/80 shadow-[0_0_5px_rgba(239,68,68,0.5)]" />
               <div className="h-2.5 w-2.5 rounded-full bg-yellow-500/80 shadow-[0_0_5px_rgba(234,179,8,0.5)]" />
               <div className="h-2.5 w-2.5 rounded-full bg-green-500/80 shadow-[0_0_5px_rgba(34,197,94,0.5)]" />
-              <div className="ml-2 text-[10px] font-mono text-muted-foreground/50">zsh</div>
+              <div className="ml-2 font-mono text-[10px] text-muted-foreground/50">
+                zsh
+              </div>
             </div>
 
             <div className="relative z-0 space-y-1.5 p-4 pt-0 font-mono text-[13px] leading-relaxed text-gray-300">
               <div>
-                <span className="text-green-400 font-semibold">guest@terminal:~$</span>{" "}
+                <span className="font-semibold text-green-400">
+                  guest@terminal:~$
+                </span>{" "}
                 <span className="text-gray-100">termirror</span>
               </div>
               <div className="text-gray-500">
@@ -200,19 +227,21 @@ export default function Page() {
               <div className="text-gray-500">
                 [info] Connected to relay node-1
               </div>
-              <div className="text-green-400/90 font-semibold drop-shadow-[0_0_2px_rgba(74,222,128,0.4)]">
+              <div className="font-semibold text-green-400/90 drop-shadow-[0_0_2px_rgba(74,222,128,0.4)]">
                 [ok] Streaming active at room: 48F-A29
               </div>
               <div className="pt-2">
-                <span className="text-blue-400 font-semibold">master</span>{" "}
+                <span className="font-semibold text-blue-400">master</span>{" "}
                 <span className="text-gray-100">git status</span>
               </div>
               <div className="text-gray-400"># On branch master</div>
               <div className="text-gray-400">
-                # Your branch is up to date with 'origin/master'.
+                # Your branch is up to date with &apos;origin/master&apos;.
               </div>
               <div className="mt-1 flex items-center">
-                <span className="text-green-400 font-semibold mr-2">guest@terminal:~$</span>
+                <span className="mr-2 font-semibold text-green-400">
+                  guest@terminal:~$
+                </span>
                 {/* Keeping the specific pulse you added, just making it slightly smoother */}
                 <div className="h-3.5 w-2 animate-pulse bg-gray-400 shadow-[0_0_8px_rgba(156,163,175,0.5)] transition-opacity duration-300" />
               </div>
@@ -221,17 +250,23 @@ export default function Page() {
 
           {/* STATS (Paddings and sizes kept exactly as you manually set them) */}
           <div className="grid grid-cols-2 border border-border/50 bg-background/40 backdrop-blur-md">
-            <div className="border-r border-border/50 p-4 transition-colors hover:bg-muted/10 group">
-              <div className="mb-1 text-[11px] tracking-[0.25em] text-muted-foreground uppercase flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-blue-500 transition-shadow duration-300 group-hover:shadow-[0_0_8px_rgba(59,130,246,0.6)]" /> Global Uplink
+            <div className="group border-r border-border/50 p-4 transition-colors hover:bg-muted/10">
+              <div className="mb-1 flex items-center gap-2 text-[11px] tracking-[0.25em] text-muted-foreground uppercase">
+                <div className="h-1.5 w-1.5 rounded-full bg-blue-500 transition-shadow duration-300 group-hover:shadow-[0_0_8px_rgba(59,130,246,0.6)]" />{" "}
+                Global Uplink
               </div>
-              <div className="text-2xl font-light tracking-tight md:text-3xl transition-transform duration-300 group-hover:scale-105">1.2 Gbps</div>
+              <div className="text-2xl font-light tracking-tight transition-transform duration-300 group-hover:scale-105 md:text-3xl">
+                1.2 Gbps
+              </div>
             </div>
-            <div className="p-4 transition-colors hover:bg-muted/10 group">
-              <div className="mb-1 text-[11px] tracking-[0.25em] text-muted-foreground uppercase flex items-center gap-2">
-                <div className="h-1.5 w-1.5 rounded-full bg-purple-500 transition-shadow duration-300 group-hover:shadow-[0_0_8px_rgba(168,85,247,0.6)]" /> Relay Nodes
+            <div className="group p-4 transition-colors hover:bg-muted/10">
+              <div className="mb-1 flex items-center gap-2 text-[11px] tracking-[0.25em] text-muted-foreground uppercase">
+                <div className="h-1.5 w-1.5 rounded-full bg-purple-500 transition-shadow duration-300 group-hover:shadow-[0_0_8px_rgba(168,85,247,0.6)]" />{" "}
+                Relay Nodes
               </div>
-              <div className="text-2xl font-light tracking-tight md:text-3xl transition-transform duration-300 group-hover:scale-105">42 <span className="text-sm text-muted-foreground">Active</span></div>
+              <div className="text-2xl font-light tracking-tight transition-transform duration-300 group-hover:scale-105 md:text-3xl">
+                42 <span className="text-sm text-muted-foreground">Active</span>
+              </div>
             </div>
           </div>
         </div>
@@ -246,30 +281,35 @@ export default function Page() {
           </div>
           <div className="flex items-center gap-3">
             <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]"></span>
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
+              <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]"></span>
             </span>
-            <span className="text-foreground/80">Live — Latency &lt;14ms avg</span>
+            <span className="text-foreground/80">
+              Live — Latency &lt;14ms avg
+            </span>
           </div>
         </div>
       </div>
 
       {/* HOW IT WORKS */}
-      <section id="how-it-works" className="relative z-10 mx-auto max-w-7xl px-6 py-32 animate-in fade-in duration-1000">
+      <section
+        id="how-it-works"
+        className="relative z-10 mx-auto max-w-7xl animate-in px-6 py-32 duration-1000 fade-in"
+      >
         <div className="mb-6 text-xs tracking-[0.3em] text-muted-foreground uppercase">
-          // How it Works
+          {"// How it Works"}
         </div>
 
-        <h2 className="max-w-2xl text-4xl font-light leading-tight md:text-6xl">
+        <h2 className="max-w-2xl text-4xl leading-tight font-light md:text-6xl">
           Three steps to
           <br />
-          <span className="font-semibold text-transparent bg-clip-text bg-gradient-to-r from-foreground to-foreground/50">
+          <span className="bg-linear-to-r from-foreground to-foreground/50 bg-clip-text font-semibold text-transparent">
             real-time collaboration.
           </span>
         </h2>
 
         {/* Backdrop-sm and borders kept verbatim, added smoother lift and scale to children */}
-        <div className="mt-20 grid border border-border/50 bg-background/20 backdrop-blur-sm md:grid-cols-3 hover:shadow-2xl transition-all duration-500">
+        <div className="mt-20 grid border border-border/50 bg-background/20 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl md:grid-cols-3">
           {[
             {
               step: "Step 01",
@@ -293,11 +333,13 @@ export default function Page() {
             <div
               key={item.title}
               className={`group p-10 transition-all duration-300 hover:bg-muted/10 ${
-                index !== 2 ? "border-b border-border/50 md:border-r md:border-b-0" : ""
+                index !== 2
+                  ? "border-b border-border/50 md:border-r md:border-b-0"
+                  : ""
               }`}
             >
               {/* Scale icon and change border on group hover */}
-              <div className="mb-8 inline-flex h-12 w-12 items-center justify-center border border-border/50 bg-background transition-all duration-300 group-hover:border-foreground/30 group-hover:scale-110">
+              <div className="mb-8 inline-flex h-12 w-12 items-center justify-center border border-border/50 bg-background transition-all duration-300 group-hover:scale-110 group-hover:border-foreground/30">
                 <item.icon className="h-5 w-5 text-muted-foreground transition-colors duration-300 group-hover:text-foreground" />
               </div>
 
@@ -319,11 +361,28 @@ export default function Page() {
       <footer className="relative z-10 border-t border-border/50 bg-background/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-10 text-xs tracking-[0.18em] text-muted-foreground uppercase md:flex-row md:items-center md:justify-between">
           <div className="flex flex-wrap gap-x-8 gap-y-4">
-            <Link href="#" className="transition-colors hover:text-foreground hover:scale-105">Privacy Policy</Link>
-            <Link href="#" className="transition-colors hover:text-foreground hover:scale-105">Terms of Service</Link>
-            <Link href="#" className="transition-colors hover:text-foreground hover:scale-105">Contact</Link>
+            <Link
+              href="#"
+              className="transition-colors hover:scale-105 hover:text-foreground"
+            >
+              Privacy Policy
+            </Link>
+            <Link
+              href="#"
+              className="transition-colors hover:scale-105 hover:text-foreground"
+            >
+              Terms of Service
+            </Link>
+            <Link
+              href="#"
+              className="transition-colors hover:scale-105 hover:text-foreground"
+            >
+              Contact
+            </Link>
           </div>
-          <div className="text-muted-foreground/60">© 2026 Terminal Share / Terminal Protocol Labs</div>
+          <div className="text-muted-foreground/60">
+            © 2026 Terminal Share / Terminal Protocol Labs
+          </div>
         </div>
       </footer>
     </main>
