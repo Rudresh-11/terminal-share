@@ -2,7 +2,12 @@
 import { AIProvider } from "@/hooks/use-ai-config"
 import { toast } from "sonner"
 
-export async function generateCommand(provider: AIProvider, key: string, prompt: string): Promise<string> {
+export async function generateCommand(
+  provider: AIProvider,
+  key: string,
+  prompt: string,
+  model: string
+): Promise<string> {
   const systemPrompt = `You are an AI assistant controlling a remote terminal.
 Your goal is to convert the user's natural language request into valid shell commands.
 - Do NOT use markdown formatting (no \`\`\` or \` symbols).
@@ -10,7 +15,7 @@ Your goal is to convert the user's natural language request into valid shell com
 - If the request is unclear or dangerous, return an empty string.
 - Assume a Linux environment.
 - Keep the command concise.
-Your output exact format should be : 
+Your output exact format should be :
 {
   "response": "Ypur natural language response to the user, confirming what you understood the request to be",
   "command": "  "The shell command you generated based on the user's request"
@@ -52,7 +57,7 @@ Your output exact format should be :
         Authorization: `Bearer ${key}`,
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: model || "gpt-4o-mini",
         // reasoning: {effort: "low"},
         input: [
           { role: "developer", content: systemPrompt },
@@ -75,7 +80,7 @@ Your output exact format should be :
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         apiKey: key,
-        model: "claude-3-5-sonnet-20240620",
+        model: model || "claude-3-5-sonnet-20240620",
         max_tokens: 256,
         system: systemPrompt,
         messages: [{ role: "user", content: prompt }],
@@ -91,7 +96,7 @@ Your output exact format should be :
 
   if (provider === "gemini") {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${model || "gemini-2.5-flash-lite"}:generateContent`,
       {
         method: "POST",
         headers: {

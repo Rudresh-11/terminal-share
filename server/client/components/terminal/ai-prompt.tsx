@@ -1,23 +1,25 @@
 "use client"
 
 import { useEffect, useState } from "react"
-
-import { Sparkles, Loader2, Terminal, ChevronRight, Bot, ArrowUpLeft } from "lucide-react"
-
+import { Sparkles, Loader2, Terminal, ChevronRight, Bot, ArrowUpLeft, Settings } from "lucide-react"
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarGroup } from "@/components/ui/sidebar"
-
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import AISettings from "./ai-settings"
-
 import { useAIConfig } from "@/hooks/use-ai-config"
 import { generateCommand } from "@/lib/ai-service"
+import { fetchModels, AIModel } from "@/lib/ai-models"
 import { socket } from "@/lib/socket"
-import { Settings } from "lucide-react"
-
 import { toast } from "sonner"
 
 type Props = {
@@ -32,13 +34,39 @@ type AIMessage = {
 }
 
 export default function AISidebar({ sessionCode }: Props) {
-  const { config, setProvider } = useAIConfig()
+  const { config, setProvider, setModel } = useAIConfig()
   const [prompt, setPrompt] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [messages, setMessages] = useState<AIMessage[]>([])
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const [availableModels, setAvailableModels] = useState<Record<string, AIModel[]>>({})
+  const [isFetchingModels, setIsFetchingModels] = useState(false)
 
-  useEffect(() => {}, [config, isSettingsOpen])
+  // const provider = config.provider
+  // const apiKey = config.keys[provider]
+  // const currentModel = config.model
+
+  useEffect(() => {
+    const updateModels = async () => {
+      console.log("Updating models for provider:", config.provider)
+      // You should probably uncomment this to prevent unnecessary API calls
+      // if (!apiKey) return
+
+      setIsFetchingModels(true)
+      const openaimodels = await fetchModels("openai")
+      const geminimodels = await fetchModels("gemini")
+      const claudemodels = await fetchModels("claude")
+      setAvailableModels({ openai: openaimodels, gemini: geminimodels, claude: claudemodels })
+
+      // if (models.length > 0 && !currentModel) {
+      //   setModel(models[0].id)
+      // }
+      setIsFetchingModels(false)
+    }
+
+    updateModels()
+  }, [config])
+
   const handleAI = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -54,7 +82,7 @@ export default function AISidebar({ sessionCode }: Props) {
     setIsLoading(true)
 
     try {
-      const result = await generateCommand(config.provider, key, prompt)
+      const result = await generateCommand(config.provider, key, prompt, config.model)
       if (!result) {
         toast.error("AI failed to generate response")
         return
@@ -183,6 +211,7 @@ export default function AISidebar({ sessionCode }: Props) {
                 </div>
               ))}
               <div className="animate-pulse text-center text-xs text-muted-foreground">Waiting for your input...</div>
+              {/* <div className="animate-pulse text-center text-xs text-muted-foreground">{JSON.stringify(config)}</div> */}
             </div>
           </ScrollArea>
         </SidebarGroup>
@@ -191,16 +220,39 @@ export default function AISidebar({ sessionCode }: Props) {
       {/* Footer */}
       <SidebarFooter className="border-t border-border p-3">
         <form onSubmit={handleAI} className="flex items-center gap-2">
-          {/* Cleaned up Select Trigger to show actual provider name cleanly */}
-          <Select value={config.provider} onValueChange={(value) => setProvider(value as any)}>
-            <SelectTrigger className="h-8 w-22.5 bg-muted/50 text-xs capitalize">
-              <SelectValue placeholder="Model" />
+          {/* Provider and Model Selection */}
+          <Select
+            value={`${config.provider}:${config.model}`}
+            onValueChange={async (value) => {
+              if (!value || !value.includes(":")) return
+              console.log("Selected model:", value)
+              const [provider, model] = value.split(":")
+              console.log("Setting provider:", provider, "model:", model)
+              await setProvider(provider as any)
+              setModel(model)
+            }}
+          >
+            <SelectTrigger className="h-8 w-32 bg-muted/50 text-xs capitalize">
+              <SelectValue placeholder="Select Model" />
             </SelectTrigger>
 
             <SelectContent align="start">
-              <SelectItem value="openai">OpenAI</SelectItem>
-              <SelectItem value="claude">Claude</SelectItem>
-              <SelectItem value="gemini">Gemini</SelectItem>
+              {(["openai", "claude", "gemini"] as const).map((provider) => (
+                <SelectGroup key={provider}>
+                  <SelectLabel className="capitalize">{provider}</SelectLabel>
+                  {availableModels[provider]?.length > 0 ? (
+                    availableModels[provider].map((m) => (
+                      <SelectItem key={m.id} value={`${provider}:${m.id}`}>
+                        {m.name}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value={`${provider}:unknown`} disabled>
+                      No models available
+                    </SelectItem>
+                  )}
+                </SelectGroup>
+              ))}
             </SelectContent>
           </Select>
 

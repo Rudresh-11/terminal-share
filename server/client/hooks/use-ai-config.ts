@@ -5,6 +5,7 @@ export type AIProvider = "openai" | "claude" | "gemini"
 
 export interface AIConfig {
   provider: AIProvider
+  model: string
   keys: {
     openai?: string
     claude?: string
@@ -15,6 +16,7 @@ export interface AIConfig {
 export function useAIConfig() {
   const [config, setConfig] = useState<AIConfig>({
     provider: "openai",
+    model: "",
     keys: {},
   })
 
@@ -42,28 +44,37 @@ export function useAIConfig() {
   }, [])
 
   const updateKey = (provider: AIProvider, key: string) => {
-    const newConfig = {
-      ...config,
-      keys: {
-        ...config.keys,
-        [provider]: key,
-      },
-    }
-    setConfig(newConfig)
-    localStorage.setItem("ai-config", JSON.stringify(newConfig))
+    setConfig((prev) => {
+      const newConfig = {
+        ...prev,
+        keys: {
+          ...prev.keys,
+          [provider]: key,
+        },
+      }
+      localStorage.setItem("ai-config", JSON.stringify(newConfig))
+      window.dispatchEvent(new Event("ai-config-updated"))
+      return newConfig
+    })
+  }
 
-    // 3. Dispatch event to tell other components to reload from localStorage
-    window.dispatchEvent(new Event("ai-config-updated"))
+  const setModel = (model: string) => {
+    setConfig((prev) => {
+      const newConfig = { ...prev, model }
+      localStorage.setItem("ai-config", JSON.stringify(newConfig))
+      window.dispatchEvent(new Event("ai-config-updated"))
+      return newConfig
+    })
   }
 
   const setProvider = (provider: AIProvider) => {
-    const newConfig = { ...config, provider }
-    setConfig(newConfig)
-    localStorage.setItem("ai-config", JSON.stringify(newConfig))
-
-    // 3. Dispatch event to tell other components to reload from localStorage
-    window.dispatchEvent(new Event("ai-config-updated"))
+    setConfig((prev) => {
+      const newConfig = { ...prev, provider }
+      localStorage.setItem("ai-config", JSON.stringify(newConfig))
+      window.dispatchEvent(new Event("ai-config-updated"))
+      return newConfig
+    })
   }
 
-  return { config, updateKey, setProvider }
+  return { config, updateKey, setProvider, setModel }
 }
