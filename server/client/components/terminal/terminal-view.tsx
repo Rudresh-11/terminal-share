@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { socket } from "@/lib/socket"
 import { Button } from "@/components/ui/button"
+import { SidebarTrigger } from "../ui/sidebar"
+import { Settings } from "lucide-react"
 
 type Props = {
   sessionCode: string
@@ -152,13 +154,12 @@ export default function TerminalView({ sessionCode }: Props) {
             >
               Stop Session
             </Button>
+            <SidebarTrigger className="ml-2" />
           </div>
         </div>
       </div>
 
-      <div className="relative flex-1 overflow-hidden">
-        <div ref={terminalRef} className="h-full w-full" />
-      </div>
+      <div ref={terminalRef} className="h-full w-full" />
     </div>
   )
 }

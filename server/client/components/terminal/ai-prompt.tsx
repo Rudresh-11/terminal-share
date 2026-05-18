@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 
-import { Sparkles, Loader2, Terminal, ChevronRight, Bot } from "lucide-react"
+import { Sparkles, Loader2, Terminal, ChevronRight, Bot, ArrowUpLeft } from "lucide-react"
 
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarGroup } from "@/components/ui/sidebar"
 
@@ -59,16 +59,30 @@ export default function AISidebar({ sessionCode }: Props) {
         toast.error("AI failed to generate response")
         return
       }
-      const parsed = JSON.parse(result)
+      try {
+        const parsed = JSON.parse(result)
 
-      const message: AIMessage = {
-        id: crypto.randomUUID(),
-        prompt,
-        response: parsed.response,
-        command: parsed.command,
+        const message: AIMessage = {
+          id: crypto.randomUUID(),
+          prompt,
+          response: parsed.response,
+          command: parsed.command,
+        }
+
+        setMessages((prev) => [...prev, message])
+      } catch {
+        const parsed = result
+
+        const message: AIMessage = {
+          id: crypto.randomUUID(),
+          prompt,
+          response: parsed,
+          command: "",
+        }
+
+        setMessages((prev) => [...prev, message])
+        toast.error("Failed to parse AI response")
       }
-
-      setMessages((prev) => [message, ...prev])
     } catch (err: any) {
       toast.error(err.message || "AI request failed")
     } finally {
@@ -77,10 +91,11 @@ export default function AISidebar({ sessionCode }: Props) {
     }
   }
 
-  const executeCommand = (command: string) => {
+  const executeCommand = (command: string, exec: boolean = true) => {
+    const cmd = command.trim() + (exec ? "\n" : "") // Add newline if executing, otherwise just paste
     socket.emit("terminal-input", {
       sessionId: sessionCode,
-      data: command + "\n",
+      data: cmd,
     })
 
     toast.success("Executing command")
@@ -149,14 +164,25 @@ export default function AISidebar({ sessionCode }: Props) {
                     <code className="block overflow-x-auto rounded-md bg-black/40 px-2 py-2 font-mono text-xs">
                       {msg.command}
                     </code>
-                    <Button size="sm" className="w-full gap-2" onClick={() => executeCommand(msg.command)}>
-                      <Terminal className="h-3.5 w-3.5" />
-                      Execute Command
-                    </Button>
+                    <div className="flex items-center justify-center gap-2">
+                      <Button size="sm" className="max-w-[50%] gap-2" onClick={() => executeCommand(msg.command)}>
+                        <Terminal className="max-h-3.5 max-w-3.5" />
+                        Execute Command
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant={"outline"}
+                        className="max-w-[50%] gap-2 bg-blend-color-burn"
+                        onClick={() => executeCommand(msg.command, false)}
+                      >
+                        <ArrowUpLeft className="max-h-3.5 max-w-3.5" />
+                        Paste in Terminal
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ))}
-              <div className="animate-pulse text-center text-xs text-muted-foreground">{JSON.stringify(config)}</div>
+              <div className="animate-pulse text-center text-xs text-muted-foreground">Waiting for your input...</div>
             </div>
           </ScrollArea>
         </SidebarGroup>
@@ -167,7 +193,7 @@ export default function AISidebar({ sessionCode }: Props) {
         <form onSubmit={handleAI} className="flex items-center gap-2">
           {/* Cleaned up Select Trigger to show actual provider name cleanly */}
           <Select value={config.provider} onValueChange={(value) => setProvider(value as any)}>
-            <SelectTrigger className="h-8 w-[90px] bg-muted/50 text-xs capitalize">
+            <SelectTrigger className="h-8 w-22.5 bg-muted/50 text-xs capitalize">
               <SelectValue placeholder="Model" />
             </SelectTrigger>
 
