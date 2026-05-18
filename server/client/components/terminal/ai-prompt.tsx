@@ -1,24 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import { Sparkles, Loader2, Terminal, ChevronRight, Bot } from "lucide-react"
 
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarHeader,
-  SidebarGroup,
-} from "@/components/ui/sidebar"
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarGroup } from "@/components/ui/sidebar"
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -50,6 +38,7 @@ export default function AISidebar({ sessionCode }: Props) {
   const [messages, setMessages] = useState<AIMessage[]>([])
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
+  useEffect(() => {}, [config, isSettingsOpen])
   const handleAI = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -98,12 +87,7 @@ export default function AISidebar({ sessionCode }: Props) {
   }
 
   return (
-    <Sidebar
-      side="right"
-      variant="sidebar"
-      collapsible="offcanvas"
-      className="border-l border-border"
-    >
+    <Sidebar side="right" variant="sidebar" collapsible="offcanvas" className="border-l border-border">
       {/* Header */}
       <SidebarHeader className="border-b border-border px-4 py-3">
         <div className="flex items-center justify-between">
@@ -111,9 +95,7 @@ export default function AISidebar({ sessionCode }: Props) {
             <Bot className="h-4 w-4 text-primary" />
             <div className="flex flex-col">
               <span className="text-sm font-medium">AI Assistant</span>
-              <span className="text-[10px] tracking-wide text-muted-foreground uppercase">
-                {config.provider}
-              </span>
+              <span className="text-[10px] tracking-wide text-muted-foreground uppercase">{config.provider}</span>
             </div>
           </div>
 
@@ -136,8 +118,7 @@ export default function AISidebar({ sessionCode }: Props) {
               {messages.length === 0 && (
                 <>
                   <div className="rounded-lg border border-dashed border-border p-4 text-xs text-muted-foreground">
-                    Ask AI to debug logs, generate commands, install packages,
-                    explain errors, or automate workflows.
+                    Ask AI to debug logs, generate commands, install packages, explain errors, or automate workflows.
                   </div>
                   <div className="rounded-lg border border-dashed border-border p-4 text-xs text-muted-foreground">
                     Use <kbd>ctrl</kbd> + <kbd>b</kbd> to toggle this sidebar.
@@ -146,10 +127,7 @@ export default function AISidebar({ sessionCode }: Props) {
               )}
 
               {messages.map((msg) => (
-                <div
-                  key={msg.id}
-                  className="overflow-hidden rounded-xl border border-border bg-muted/20"
-                >
+                <div key={msg.id} className="overflow-hidden rounded-xl border border-border bg-muted/20">
                   {/* Prompt */}
                   <div className="border-b border-border px-3 py-3">
                     <div className="mb-2 flex items-center gap-2 text-xs text-muted-foreground">
@@ -161,12 +139,8 @@ export default function AISidebar({ sessionCode }: Props) {
 
                   {/* Response */}
                   <div className="border-b border-border px-3 py-3">
-                    <div className="mb-2 text-xs text-muted-foreground">
-                      Output
-                    </div>
-                    <pre className="font-mono text-xs leading-relaxed whitespace-pre-wrap">
-                      {msg.response}
-                    </pre>
+                    <div className="mb-2 text-xs text-muted-foreground">Output</div>
+                    <pre className="font-mono text-xs leading-relaxed whitespace-pre-wrap">{msg.response}</pre>
                   </div>
 
                   {/* Command */}
@@ -175,17 +149,14 @@ export default function AISidebar({ sessionCode }: Props) {
                     <code className="block overflow-x-auto rounded-md bg-black/40 px-2 py-2 font-mono text-xs">
                       {msg.command}
                     </code>
-                    <Button
-                      size="sm"
-                      className="w-full gap-2"
-                      onClick={() => executeCommand(msg.command)}
-                    >
+                    <Button size="sm" className="w-full gap-2" onClick={() => executeCommand(msg.command)}>
                       <Terminal className="h-3.5 w-3.5" />
                       Execute Command
                     </Button>
                   </div>
                 </div>
               ))}
+              <div className="animate-pulse text-center text-xs text-muted-foreground">{JSON.stringify(config)}</div>
             </div>
           </ScrollArea>
         </SidebarGroup>
@@ -195,10 +166,7 @@ export default function AISidebar({ sessionCode }: Props) {
       <SidebarFooter className="border-t border-border p-3">
         <form onSubmit={handleAI} className="flex items-center gap-2">
           {/* Cleaned up Select Trigger to show actual provider name cleanly */}
-          <Select
-            value={config.provider}
-            onValueChange={(value) => setProvider(value as any)}
-          >
+          <Select value={config.provider} onValueChange={(value) => setProvider(value as any)}>
             <SelectTrigger className="h-8 w-[90px] bg-muted/50 text-xs capitalize">
               <SelectValue placeholder="Model" />
             </SelectTrigger>
@@ -217,25 +185,13 @@ export default function AISidebar({ sessionCode }: Props) {
             className="h-8 flex-1 text-sm"
           />
 
-          <Button
-            type="submit"
-            disabled={isLoading}
-            size="icon"
-            className="h-8 w-8 shrink-0"
-          >
-            {isLoading ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <ChevronRight className="h-4 w-4" />
-            )}
+          <Button type="submit" disabled={isLoading} size="icon" className="h-8 w-8 shrink-0">
+            {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ChevronRight className="h-4 w-4" />}
           </Button>
         </form>
       </SidebarFooter>
 
-      <AISettings
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-      />
+      <AISettings isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
     </Sidebar>
   )
 }

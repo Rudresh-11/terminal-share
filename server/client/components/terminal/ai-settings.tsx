@@ -50,15 +50,8 @@ export default function AISettings({ isOpen, onClose }: AISettingsProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
       <Card className="w-full max-w-md border-border/50 bg-background shadow-2xl">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 border-b border-border/50 px-6 py-4">
-          <CardTitle className="text-sm font-medium tracking-widest uppercase">
-            AI Configuration
-          </CardTitle>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onClose}
-            className="h-8 w-8 rounded-full"
-          >
+          <CardTitle className="text-sm font-medium tracking-widest uppercase">AI Configuration</CardTitle>
+          <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 rounded-full">
             <X className="h-4 w-4" />
           </Button>
         </CardHeader>
@@ -108,11 +101,7 @@ export default function AISettings({ isOpen, onClose }: AISettingsProps) {
                 className="absolute top-0 right-0 h-10 w-10 text-muted-foreground hover:text-foreground"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? (
-                  <EyeOff className="h-4 w-4" />
-                ) : (
-                  <Eye className="h-4 w-4" />
-                )}
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </Button>
             </div>
 
@@ -135,8 +124,8 @@ export default function AISettings({ isOpen, onClose }: AISettingsProps) {
           {/* Local Storage Privacy Note */}
           <div className="rounded-sm border border-border/50 bg-muted/30 p-3">
             <p className="text-[10px] leading-relaxed text-muted-foreground">
-              Keys are stored locally in your browser and never sent to our
-              servers. They are used directly to call the AI provider's API.
+              Keys are stored locally in your browser and never sent to our servers. They are used directly to call the
+              AI provider's API.
             </p>
           </div>
         </CardContent>

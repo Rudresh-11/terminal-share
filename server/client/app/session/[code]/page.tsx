@@ -5,11 +5,7 @@ import AISidebar from "@/components/terminal/ai-prompt"
 
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 
-export default async function SessionPage({
-  params,
-}: {
-  params: Promise<{ code: string }>
-}) {
+export default async function SessionPage({ params }: { params: Promise<{ code: string }> }) {
   const { code } = await params
 
   return (

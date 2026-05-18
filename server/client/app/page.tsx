@@ -50,16 +50,10 @@ export default function Page() {
 
           <nav className="flex items-center gap-6 text-xs tracking-[0.18em] text-muted-foreground uppercase">
             {/* Added focus outline and scale transition to links */}
-            <Link
-              href="#how-it-works"
-              className="transition-all duration-300 hover:scale-105 hover:text-foreground"
-            >
+            <Link href="#how-it-works" className="transition-all duration-300 hover:scale-105 hover:text-foreground">
               Protocol
             </Link>
-            <Link
-              href="#"
-              className="transition-all duration-300 hover:scale-105 hover:text-foreground"
-            >
+            <Link href="#" className="transition-all duration-300 hover:scale-105 hover:text-foreground">
               Documentation
             </Link>
             {/* Button interaction logic kept same, just slightly smoother transition */}
@@ -68,10 +62,7 @@ export default function Page() {
               variant="outline"
               className="h-8 rounded-none border-border/50 bg-background/50 px-3 text-[11px] transition-all duration-300 hover:-translate-y-0.5 hover:bg-accent"
             >
-              <Link
-                href="https://github.com/Rudresh-11/terminal-share"
-                target="_blank"
-              >
+              <Link href="https://github.com/Rudresh-11/terminal-share" target="_blank">
                 <Gift className="mr-2 h-3.5 w-3.5" />
                 GitHub
               </Link>
@@ -96,14 +87,11 @@ export default function Page() {
           </h1>
 
           <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground">
-            Simple, secure terminal sharing for collaborative debugging and
-            demonstrations. Zero configuration required.
+            Simple, secure terminal sharing for collaborative debugging and demonstrations. Zero configuration required.
           </p>
 
           <div className="mt-8 border-t border-border/50 pt-6">
-            <div className="mb-4 text-xs tracking-[0.25em] text-muted-foreground uppercase">
-              Enter Access Code
-            </div>
+            <div className="mb-4 text-xs tracking-[0.25em] text-muted-foreground uppercase">Enter Access Code</div>
 
             {/* Input focus states are kept same, just slightly smoother transition on the button hover */}
             <div className="flex max-w-md transition-all duration-300 focus-within:shadow-[0_0_20px_rgba(34,197,94,0.1)] focus-within:ring-1 focus-within:ring-foreground/50">
@@ -151,21 +139,12 @@ export default function Page() {
               </p>
 
               <div className="space-y-2">
-                <div className="text-[11px] tracking-[0.25em] text-muted-foreground uppercase">
-                  Install Globally
-                </div>
+                <div className="text-[11px] tracking-[0.25em] text-muted-foreground uppercase">Install Globally</div>
                 {/* Reduced py-3 to py-2 kept verbatim, added group scale animation on the icon inside */}
                 <div className="group flex items-center justify-between border border-border/50 bg-muted/20 px-4 py-2 text-sm transition-colors hover:bg-muted/30">
-                  <code className="font-mono text-foreground/90">
-                    npm i -g @rudresh-11/termirror@latest
-                  </code>
+                  <code className="font-mono text-foreground/90">npm i -g @rudresh-11/termirror@latest</code>
                   <button
-                    onClick={() =>
-                      copyText(
-                        "npm i -g @rudresh-11/termirror@latest",
-                        "install"
-                      )
-                    }
+                    onClick={() => copyText("npm i -g @rudresh-11/termirror@latest", "install")}
                     className="flex items-center gap-2 text-xs tracking-[0.18em] text-muted-foreground uppercase transition-colors hover:text-foreground"
                   >
                     {copied === "install" ? (
@@ -178,13 +157,9 @@ export default function Page() {
               </div>
 
               <div className="space-y-2">
-                <div className="text-[11px] tracking-[0.25em] text-muted-foreground uppercase">
-                  Start Session
-                </div>
+                <div className="text-[11px] tracking-[0.25em] text-muted-foreground uppercase">Start Session</div>
                 <div className="group flex items-center justify-between border border-border/50 bg-muted/20 px-4 py-2 text-sm transition-colors hover:bg-muted/30">
-                  <code className="font-mono text-foreground/90">
-                    termirror
-                  </code>
+                  <code className="font-mono text-foreground/90">termirror</code>
                   <button
                     onClick={() => copyText("termirror", "run")}
                     className="flex items-center gap-2 text-xs tracking-[0.18em] text-muted-foreground uppercase transition-colors hover:text-foreground"
@@ -209,24 +184,16 @@ export default function Page() {
               <div className="h-2.5 w-2.5 rounded-full bg-red-500/80 shadow-[0_0_5px_rgba(239,68,68,0.5)]" />
               <div className="h-2.5 w-2.5 rounded-full bg-yellow-500/80 shadow-[0_0_5px_rgba(234,179,8,0.5)]" />
               <div className="h-2.5 w-2.5 rounded-full bg-green-500/80 shadow-[0_0_5px_rgba(34,197,94,0.5)]" />
-              <div className="ml-2 font-mono text-[10px] text-muted-foreground/50">
-                zsh
-              </div>
+              <div className="ml-2 font-mono text-[10px] text-muted-foreground/50">zsh</div>
             </div>
 
             <div className="relative z-0 space-y-1.5 p-4 pt-0 font-mono text-[13px] leading-relaxed text-gray-300">
               <div>
-                <span className="font-semibold text-green-400">
-                  guest@terminal:~$
-                </span>{" "}
+                <span className="font-semibold text-green-400">guest@terminal:~$</span>{" "}
                 <span className="text-gray-100">termirror</span>
               </div>
-              <div className="text-gray-500">
-                [info] Initializing PTY layer...
-              </div>
-              <div className="text-gray-500">
-                [info] Connected to relay node-1
-              </div>
+              <div className="text-gray-500">[info] Initializing PTY layer...</div>
+              <div className="text-gray-500">[info] Connected to relay node-1</div>
               <div className="font-semibold text-green-400/90 drop-shadow-[0_0_2px_rgba(74,222,128,0.4)]">
                 [ok] Streaming active at room: 48F-A29
               </div>
@@ -235,13 +202,9 @@ export default function Page() {
                 <span className="text-gray-100">git status</span>
               </div>
               <div className="text-gray-400"># On branch master</div>
-              <div className="text-gray-400">
-                # Your branch is up to date with &apos;origin/master&apos;.
-              </div>
+              <div className="text-gray-400"># Your branch is up to date with &apos;origin/master&apos;.</div>
               <div className="mt-1 flex items-center">
-                <span className="mr-2 font-semibold text-green-400">
-                  guest@terminal:~$
-                </span>
+                <span className="mr-2 font-semibold text-green-400">guest@terminal:~$</span>
                 {/* Keeping the specific pulse you added, just making it slightly smoother */}
                 <div className="h-3.5 w-2 animate-pulse bg-gray-400 shadow-[0_0_8px_rgba(156,163,175,0.5)] transition-opacity duration-300" />
               </div>
@@ -284,9 +247,7 @@ export default function Page() {
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
               <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.4)]"></span>
             </span>
-            <span className="text-foreground/80">
-              Live — Latency &lt;14ms avg
-            </span>
+            <span className="text-foreground/80">Live — Latency &lt;14ms avg</span>
           </div>
         </div>
       </div>
@@ -296,9 +257,7 @@ export default function Page() {
         id="how-it-works"
         className="relative z-10 mx-auto max-w-7xl animate-in px-6 py-32 duration-1000 fade-in"
       >
-        <div className="mb-6 text-xs tracking-[0.3em] text-muted-foreground uppercase">
-          {"// How it Works"}
-        </div>
+        <div className="mb-6 text-xs tracking-[0.3em] text-muted-foreground uppercase">{"// How it Works"}</div>
 
         <h2 className="max-w-2xl text-4xl leading-tight font-light md:text-6xl">
           Three steps to
@@ -333,9 +292,7 @@ export default function Page() {
             <div
               key={item.title}
               className={`group p-10 transition-all duration-300 hover:bg-muted/10 ${
-                index !== 2
-                  ? "border-b border-border/50 md:border-r md:border-b-0"
-                  : ""
+                index !== 2 ? "border-b border-border/50 md:border-r md:border-b-0" : ""
               }`}
             >
               {/* Scale icon and change border on group hover */}
@@ -343,15 +300,11 @@ export default function Page() {
                 <item.icon className="h-5 w-5 text-muted-foreground transition-colors duration-300 group-hover:text-foreground" />
               </div>
 
-              <div className="mb-4 text-[11px] tracking-[0.25em] text-muted-foreground uppercase">
-                {item.step}
-              </div>
+              <div className="mb-4 text-[11px] tracking-[0.25em] text-muted-foreground uppercase">{item.step}</div>
 
               <h3 className="mb-4 text-xl font-medium">{item.title}</h3>
 
-              <p className="text-sm leading-relaxed text-muted-foreground">
-                {item.desc}
-              </p>
+              <p className="text-sm leading-relaxed text-muted-foreground">{item.desc}</p>
             </div>
           ))}
         </div>
@@ -361,28 +314,17 @@ export default function Page() {
       <footer className="relative z-10 border-t border-border/50 bg-background/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl flex-col gap-6 px-6 py-10 text-xs tracking-[0.18em] text-muted-foreground uppercase md:flex-row md:items-center md:justify-between">
           <div className="flex flex-wrap gap-x-8 gap-y-4">
-            <Link
-              href="#"
-              className="transition-colors hover:scale-105 hover:text-foreground"
-            >
+            <Link href="#" className="transition-colors hover:scale-105 hover:text-foreground">
               Privacy Policy
             </Link>
-            <Link
-              href="#"
-              className="transition-colors hover:scale-105 hover:text-foreground"
-            >
+            <Link href="#" className="transition-colors hover:scale-105 hover:text-foreground">
               Terms of Service
             </Link>
-            <Link
-              href="#"
-              className="transition-colors hover:scale-105 hover:text-foreground"
-            >
+            <Link href="#" className="transition-colors hover:scale-105 hover:text-foreground">
               Contact
             </Link>
           </div>
-          <div className="text-muted-foreground/60">
-            © 2026 Terminal Share / Terminal Protocol Labs
-          </div>
+          <div className="text-muted-foreground/60">© 2026 Terminal Share / Terminal Protocol Labs</div>
         </div>
       </footer>
     </main>
