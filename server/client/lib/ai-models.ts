@@ -6,8 +6,20 @@ export interface AIModel {
   name: string
 }
 
-export async function fetchModels(provider: AIProvider = "claude"): Promise<AIModel[]> {
+export async function fetchModels(provider: AIProvider = "claude", endpoint?: string): Promise<AIModel[]> {
   try {
+    if (provider === "local") {
+      if (!endpoint) return []
+
+      const base = endpoint.replace(/\/$/, "")
+      const url = /^https?:\/\//.test(base) ? base : `https://${base}`
+
+      const response = await fetch(`${url}/api/tags`)
+      if (!response.ok) return []
+      const data = await response.json()
+      return (data.models ?? []).map((m: { name: string }) => ({ id: m.name, name: m.name }))
+    }
+
     if (provider === "openai") {
       /* const response = await fetch("https://api.openai.com/v1/models", {
         headers: { Authorization: `Bearer ${apiKey}` },

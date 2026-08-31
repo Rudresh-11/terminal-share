@@ -56,11 +56,16 @@ export default function AISidebar({ sessionCode }: Props) {
       const openaimodels = await fetchModels("openai")
       const geminimodels = await fetchModels("gemini")
       const claudemodels = await fetchModels("claude")
-      setAvailableModels({ openai: openaimodels, gemini: geminimodels, claude: claudemodels })
+      const localmodels = await fetchModels("local", config.keys.local)
+      setAvailableModels({ openai: openaimodels, gemini: geminimodels, claude: claudemodels, local: localmodels })
 
-      // if (models.length > 0 && !currentModel) {
-      //   setModel(models[0].id)
-      // }
+      // Local models come from whatever is actually pulled on the user's Ollama instance,
+      // so there's no sane hardcoded default — pick the first one automatically instead of
+      // leaving the request to fail against a model that was never pulled.
+      if (localmodels.length > 0 && !config.models.local) {
+        setModel("local", localmodels[0].id)
+      }
+
       setIsFetchingModels(false)
     }
 
@@ -75,14 +80,18 @@ export default function AISidebar({ sessionCode }: Props) {
     const key = config.keys[config.provider]
 
     if (!key) {
-      toast.error(`Configure ${config.provider} API key first`)
+      toast.error(
+        config.provider === "local"
+          ? "Set your Cloudflare Tunnel URL first"
+          : `Configure ${config.provider} API key first`
+      )
       return
     }
 
     setIsLoading(true)
 
     try {
-      const result = await generateCommand(config.provider, key, prompt, config.model)
+      const result = await generateCommand(config.provider, key, prompt, config.models[config.provider] ?? "")
       if (!result) {
         toast.error("AI failed to generate response")
         return
@@ -222,14 +231,16 @@ export default function AISidebar({ sessionCode }: Props) {
         <form onSubmit={handleAI} className="flex items-center gap-2">
           {/* Provider and Model Selection */}
           <Select
-            value={`${config.provider}:${config.model}`}
-            onValueChange={async (value) => {
-              if (!value || !value.includes(":")) return
-              console.log("Selected model:", value)
-              const [provider, model] = value.split(":")
-              console.log("Setting provider:", provider, "model:", model)
-              await setProvider(provider as any)
-              setModel(model)
+            value={`${config.provider}:${config.models[config.provider] ?? ""}`}
+            onValueChange={(value) => {
+              // Split on the first ":" only — Ollama model ids commonly contain their own
+              // colon-separated tag (e.g. "llama3.2:3b"), which a naive split would truncate.
+              const sep = value.indexOf(":")
+              if (sep === -1) return
+              const provider = value.slice(0, sep) as typeof config.provider
+              const model = value.slice(sep + 1)
+              setProvider(provider)
+              setModel(provider, model)
             }}
           >
             <SelectTrigger className="h-8 w-32 bg-muted/50 text-xs capitalize">
@@ -237,7 +248,7 @@ export default function AISidebar({ sessionCode }: Props) {
             </SelectTrigger>
 
             <SelectContent align="start">
-              {(["openai", "claude", "gemini"] as const).map((provider) => (
+              {(["openai", "claude", "gemini", "local"] as const).map((provider) => (
                 <SelectGroup key={provider}>
                   <SelectLabel className="capitalize">{provider}</SelectLabel>
                   {availableModels[provider]?.length > 0 ? (
@@ -248,7 +259,7 @@ export default function AISidebar({ sessionCode }: Props) {
                     ))
                   ) : (
                     <SelectItem value={`${provider}:unknown`} disabled>
-                      No models available
+                      {provider === "local" ? "Set a tunnel URL first" : "No models available"}
                     </SelectItem>
                   )}
                 </SelectGroup>

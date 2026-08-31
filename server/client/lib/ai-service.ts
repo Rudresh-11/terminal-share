@@ -71,7 +71,11 @@ Your output exact format should be :
       toast.error(data.error.message || "OpenAI API error")
       return ""
     }
-    return data.choices[0]?.message?.content?.trim() || ""
+    // /v1/responses returns an `output` array of typed items, not the
+    // `choices[0].message.content` shape used by /v1/chat/completions.
+    const message = data.output?.find((item: { type?: string }) => item.type === "message")
+    const textPart = message?.content?.find((c: { type?: string; text?: string }) => c.type === "output_text")
+    return (textPart?.text ?? data.output_text ?? "").trim()
   }
 
   if (provider === "claude") {
@@ -104,19 +108,18 @@ Your output exact format should be :
           "x-goog-api-key": key,
         },
         body: JSON.stringify({
+          systemInstruction: {
+            parts: [{ text: systemPrompt }],
+          },
           contents: [
             {
               role: "user",
               parts: [{ text: prompt }],
             },
-            {
-              role: "model",
-              parts: [{ text: systemPrompt }],
-            },
           ],
           generationConfig: {
             temperature: 0,
-            maxOutputTokens: 100,
+            maxOutputTokens: 256,
           },
         }),
       }
@@ -127,11 +130,51 @@ Your output exact format should be :
       return ""
     }
     const candidate = data.candidates?.[0]
-    const parts = candidate.content?.parts ?? []
+    const parts = candidate?.content?.parts ?? []
 
     const textPart = parts.find((p: { thought?: boolean; text?: string }) => !p.thought && p.text)
 
     return textPart?.text?.trim() || ""
   }
+
+  if (provider === "local") {
+    if (!model) {
+      toast.error("Select a local model first — pick one from the dropdown")
+      return ""
+    }
+
+    const base = key.replace(/\/$/, "")
+    const endpoint = /^https?:\/\//.test(base) ? base : `https://${base}`
+
+    let response: Response
+    try {
+      response = await fetch(`${endpoint}/api/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model,
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: prompt },
+          ],
+          stream: false,
+          format: "json",
+        }),
+      })
+    } catch {
+      toast.error("Unable to reach local LLM — check the tunnel URL and that Ollama is running")
+      return ""
+    }
+
+    if (!response.ok) {
+      const errBody = await response.json().catch(() => ({}))
+      toast.error(errBody.error || `Local LLM error (${response.status})`)
+      return ""
+    }
+
+    const data = await response.json()
+    return data.message?.content?.trim() || ""
+  }
+
   throw new Error("Unsupported AI provider")
 }
