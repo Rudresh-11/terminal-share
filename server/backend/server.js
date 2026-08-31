@@ -144,4 +144,10 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(3001, () => console.log("Relay Server: http://localhost:3001"));
+const PORT = process.env.PORT || 3001;
+
+if (!process.env.VERCEL) {
+  server.listen(PORT, () => console.log(`Relay Server: http://localhost:${PORT}`));
+}
+
+module.exports = server;

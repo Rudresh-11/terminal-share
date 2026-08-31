@@ -23,9 +23,12 @@ export default function TerminalView({ sessionCode }: Props) {
     if (!terminalRef.current) return
 
     const container = terminalRef.current
+    let cancelled = false
 
     // Dynamically import xterm only in the browser
     Promise.all([import("xterm"), import("@xterm/addon-fit")]).then(([{ Terminal }, { FitAddon }]) => {
+      if (cancelled) return
+
       const term = new Terminal({
         cursorBlink: true,
         convertEol: true,
@@ -92,7 +95,9 @@ export default function TerminalView({ sessionCode }: Props) {
     })
 
     return () => {
+      cancelled = true
       ;(container as any).__cleanup?.()
+      ;(container as any).__cleanup = undefined
     }
   }, [router, sessionCode])
 
